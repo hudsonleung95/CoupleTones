@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">CoupleTones</string>
+    <string name="title_activity_maps">Map</string>
+
+    <!-- used in AddActivity -->
+    <string name="add_btn">Add</string>
+    <string name="add_hints">Enter partner ID here</string>
+    <string name="add_ur_id">Your ID: </string>
+    <string name="add_init_id">000000</string>
+    <string name="add_tell">Tell your partner what your ID is!</string>
+
+    <!-- used in HistoryActivity -->
+    <string name="hist_empty">Your partner has not visited any of their favorite location</string>
+    <string name="hist_map">Map</string>
+</resources>
