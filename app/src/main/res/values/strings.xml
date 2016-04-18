@@ -3,11 +3,12 @@
     <string name="title_activity_maps">Map</string>
 
     <!-- used in AddActivity -->
+    <string name="add_welcome">Welcome to CoupleTones</string>
     <string name="add_btn">Add</string>
-    <string name="add_hints">Enter partner ID here</string>
-    <string name="add_ur_id">Your ID: </string>
-    <string name="add_init_id">000000</string>
-    <string name="add_tell">Tell your partner what your ID is!</string>
+    <string name="add_hints">Enter partner email here</string>
+    <string name="add_ur_email">Your email:</string>
+    <string name="add_init_email">cse110@gmail.com</string>
+    <string name="add_no_email">(You have no Gmail signed in)</string>
 
     <!-- used in HistoryActivity -->
     <string name="hist_empty">Your partner has not visited any of their favorite location</string>

@@ -13,48 +13,45 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/app_name"
+        android:text="@string/add_welcome"
         android:id="@+id/add_tv_logo"
-        android:layout_marginTop="35dp"
+        android:layout_marginTop="72dp"
+        android:textSize="40dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:textSize="40dp"/>
+        android:textAlignment="center"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/add_ur_id"
+        android:text="@string/add_ur_email"
         android:id="@+id/add_tv_ur"
         android:textSize="15dp"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"/>
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@+id/add_tv_id"
+        android:layout_toStartOf="@+id/add_tv_id"
+        android:layout_marginRight="5dp"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/add_tv_id"
-        android:layout_below="@+id/add_tv_ur"
-        android:layout_centerHorizontal="true"
-        android:text="@string/add_init_id"
-        android:textSize="25dp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/add_tv_tell"
-        android:layout_below="@+id/add_tv_id"
-        android:layout_centerHorizontal="true"
-        android:text="@string/add_tell"/>
+        android:text="@string/add_init_email"
+        android:textSize="15dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"/>
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="number"
+        android:inputType="textEmailAddress"
         android:ems="10"
         android:id="@+id/add_et_input"
-        android:layout_marginBottom="96dp"
+        android:layout_marginBottom="105dp"
         android:hint="@string/add_hints"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"/>
+        android:layout_above="@+id/add_tv_ur"
+        android:layout_centerHorizontal="true"
+        android:textAlignment="center"/>
 
     <Button
         android:layout_width="wrap_content"
