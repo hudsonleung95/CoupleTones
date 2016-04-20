@@ -2,7 +2,12 @@ package coupletones.pro.cse110.coupletones;
 
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -24,6 +29,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        init(); //initialize the search bar with its listener
     }
 
 
@@ -40,10 +47,40 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap)
     {
         mMap = googleMap;
-
+        mMap.getUiSettings().setZoomControlsEnabled(true);
         // Add a marker in Sydney and move the camera
         LatLng sydney = new LatLng(-34, 151);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+    }
+
+
+    /**
+     * this method initialize the auto-complete search bar
+     * with its listener
+     */
+    private void init(){
+        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.map_search);
+
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                //clear all previous marker
+                mMap.clear();
+
+                //put new marker in searched place
+                mMap.addMarker(new MarkerOptions().position(place.getLatLng()).title(place.getName().toString()));
+
+                //move camera to searched place and zoom in
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), 13.5f));
+
+            }
+
+            @Override
+            public void onError(Status status) {
+                // TODO: Handle the error.
+            }
+        });
     }
 }
