@@ -13,4 +13,7 @@
     <!-- used in HistoryActivity -->
     <string name="hist_empty">Your partner has not visited any of their favorite location</string>
     <string name="hist_map">Map</string>
+
+    <!-- used in map -->
+    <string name="map_info_add">Add to Favorite</string>
 </resources>
