@@ -49,7 +49,6 @@ import java.util.Map;
 public class MapsActivity extends FragmentActivity
         implements OnMapReadyCallback, OnConnectionFailedListener
 {
-
     private GoogleMap mMap;
     private LocationManager locMan;
     private String locProv;
@@ -110,6 +109,8 @@ public class MapsActivity extends FragmentActivity
         //drawer layers, used to show the info of location
         layout_drawer = (DrawerLayout)findViewById(R.id.map_drawer);
         layout_info = (LinearLayout)findViewById(R.id.map_layout_info);
+        //lock the drawer first, so empty drawer wont be dragged out
+        layout_drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
         //views in the info layer
         tv_info_title = (TextView)findViewById(R.id.map_info_tv_title);
@@ -141,10 +142,13 @@ public class MapsActivity extends FragmentActivity
             Location current = locMan.getLastKnownLocation(locProv);
             mMap.setMyLocationEnabled(true); //my location button
 
-            //go to current location
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                    new LatLng(current.getLatitude(), current.getLongitude()),
-                    ZOOMLV));
+            if(current != null){
+                //go to current location
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                        new LatLng(current.getLatitude(), current.getLongitude()),
+                        ZOOMLV));
+            }
+
         }
 
         //initialize search bar
@@ -185,6 +189,9 @@ public class MapsActivity extends FragmentActivity
      */
     private void showPlaceInfo(Place place){
         if (place != null){
+            //unlock the drawer
+            layout_drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+
             //clear the previous image
             img_info_img.setImageResource(android.R.color.transparent);
 
