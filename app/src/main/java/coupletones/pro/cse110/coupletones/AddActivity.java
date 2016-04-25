@@ -24,7 +24,18 @@ public class AddActivity extends AppCompatActivity
         setEmail();
     }
 
-    //this method will be called when user press the add button
+    /**
+     * this method will be called when user press the add button
+     * this method should be called automatically when the user
+     * already has a partner added
+     *
+     * TODO: get information from SharedPreference and do the check
+     * run the check when opening this app, and performClick if
+     * already have a partner
+     *
+     * @param v
+     *      view that call this method
+     */
     public void addPartner(View v){
         //TODO check id pairing status
 

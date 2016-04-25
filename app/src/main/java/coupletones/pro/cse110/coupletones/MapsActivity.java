@@ -63,6 +63,7 @@ public class MapsActivity extends FragmentActivity
     private ImageView img_info_img;
     private Button btn_addFav;
     private GoogleApiClient googleApi;
+    private int img_width, img_height;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -115,6 +116,9 @@ public class MapsActivity extends FragmentActivity
         tv_info_address = (TextView)findViewById(R.id.map_info_tv_address);
         img_info_img = (ImageView)findViewById(R.id.map_info_img);
         btn_addFav = (Button)findViewById(R.id.map_info_btn_add);
+
+        img_width = img_info_img.getWidth();
+        img_height = img_info_img.getHeight();
 
         //used to get current location
         locMan = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
@@ -180,18 +184,20 @@ public class MapsActivity extends FragmentActivity
      *      place that user selected
      */
     private void showPlaceInfo(Place place){
-
         if (place != null){
+            //clear the previous image
+            img_info_img.setImageResource(android.R.color.transparent);
+
+            //set information
             tv_info_title.setText(place.getName());
             tv_info_address.setText(place.getAddress());
 
-            //TODO: show image, fix
-//            new getImageInBG().execute();
+            //get and display the image in background
+            new getImageInBG().execute();
 
             //open the drawer layer from the right
             layout_drawer.openDrawer(Gravity.RIGHT);
         }
-
     }
 
     /**
@@ -218,8 +224,6 @@ public class MapsActivity extends FragmentActivity
         // An unresolvable error has occurred and a connection to Google APIs
         // could not be established. Display an error message, or handle
         // the failure silently
-
-        // ...
     }
 
     /**
@@ -253,20 +257,20 @@ public class MapsActivity extends FragmentActivity
             if (result != null && result.getStatus().isSuccess()) {
                 photoBuffer = result.getPhotoMetadata();
 
-                // Get the first photo in the list.
-                PlacePhotoMetadata photo = photoBuffer.get(0);
-                // Get a full-size bitmap for the photo.
+                //if the place have photo
+                if (photoBuffer.getCount() > 0) {
+                    // get the first bitmap in an ImageView in the size of the view
+                    Bitmap img = photoBuffer.get(0)
+                            .getScaledPhoto(googleApi, img_width, img_height).await().getBitmap();
 
-                Bitmap img = photo.getPhoto(googleApi).await()
-                        .getBitmap();
+                    //have to release the buffer to prevent memory leak
+                    photoBuffer.release();
 
-                // Get the attribution text.
-                CharSequence attribution = photo.getAttributions();
+                    return img;
+                }
 
-                //have to release the buffer to prevent memory leak
+                //release buffer although no photo
                 photoBuffer.release();
-
-                return img;
             }
 
             //if no result or fail
@@ -277,8 +281,8 @@ public class MapsActivity extends FragmentActivity
         protected void onPostExecute(Bitmap img) {
             if(img != null) //got image
                 img_info_img.setImageBitmap(img);
-            else //else, just set to grey
-                img_info_img.setBackgroundColor(Color.GRAY);
+            else //else, just set to gallery icon
+                img_info_img.setImageResource(android.R.drawable.ic_menu_gallery);
         }
     }
 
