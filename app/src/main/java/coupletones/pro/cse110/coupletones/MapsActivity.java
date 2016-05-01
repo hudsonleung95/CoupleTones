@@ -1,12 +1,17 @@
 package coupletones.pro.cse110.coupletones;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
@@ -16,12 +21,18 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
@@ -43,11 +54,11 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
-
+import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import java.util.Map;
 
 public class MapsActivity extends FragmentActivity
-        implements OnMapReadyCallback, OnConnectionFailedListener
+        implements OnMapReadyCallback, OnConnectionFailedListener,OnMapLongClickListener, AddLocationDialog.LocationDialogListener
 {
     private GoogleMap mMap;
     private LocationManager locMan;
@@ -63,24 +74,31 @@ public class MapsActivity extends FragmentActivity
     private Button btn_addFav;
     private GoogleApiClient googleApi;
     private int img_width, img_height;
+    private SharedPreferences sharedPreferences;
+    public static final String PREFERENCE_NAME = "PREFERENCE_DATA";
+    private int numLoc;
+    private LatLng latLng;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        sharedPreferences = getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
+
 
         //initialize google api client
+        // ATTENTION: This "addApi(AppIndex.API)"was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
         googleApi = new GoogleApiClient
                 .Builder(this)
                 .addApi(Places.GEO_DATA_API)
                 .addApi(Places.PLACE_DETECTION_API)
                 .enableAutoManage(this, this)
-                .build();
+                .addApi(AppIndex.API).build();
     }
 
 
@@ -98,9 +116,40 @@ public class MapsActivity extends FragmentActivity
     {
         mMap = googleMap;
         mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.setOnMapLongClickListener(this);
         init(); //initialize components
     }
 
+    @Override
+    public void onMapLongClick(LatLng point){
+
+        latLng = point;
+
+        DialogFragment dialog = new AddLocationDialog();
+        dialog.show(getFragmentManager(), "Add Location?");
+
+    }
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog) {
+        MarkerOptions marker = new MarkerOptions().position(new LatLng(latLng.latitude,
+                latLng.longitude)).title("Added Location");
+        mMap.addMarker(marker);
+        //EditText editLoc = (EditText) dialog.findViewById(R.id.location_name);
+        //String locName = editLoc.getText().toString();
+
+        numLoc++;
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putFloat("lat" + numLoc, (float) latLng.latitude);
+        editor.putFloat("lng" + numLoc, (float) latLng.longitude);
+        //editor.putString("name" + numLoc, locName);
+        editor.apply();
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+
+    }
 
     /**
      * this method initialize the components used in the map
@@ -170,6 +219,9 @@ public class MapsActivity extends FragmentActivity
                 //move camera to searched place and zoom in
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), ZOOMLV));
 
+                //save location coordinates in sharedPreferences
+                numLoc++;
+
                 //show location info after selecting a place from search bar
                 showPlaceInfo(place);
             }
@@ -237,11 +289,44 @@ public class MapsActivity extends FragmentActivity
      * this method will be called after onCreate()
      */
     @Override
-    protected void onStart(){
+    protected void onStart() {
         super.onStart();
 
         //connect google api client
         googleApi.connect();
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Maps Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app URL is correct.
+                Uri.parse("android-app://coupletones.pro.cse110.coupletones/http/host/path")
+        );
+        AppIndex.AppIndexApi.start(googleApi, viewAction);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Maps Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app URL is correct.
+                Uri.parse("android-app://coupletones.pro.cse110.coupletones/http/host/path")
+        );
+        AppIndex.AppIndexApi.end(googleApi, viewAction);
+        googleApi.disconnect();
     }
 
     /**

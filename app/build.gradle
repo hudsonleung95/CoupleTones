@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "coupletones.pro.cse110.coupletones"
-        minSdkVersion 14
+        minSdkVersion 21
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -25,3 +25,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.3.0'
     compile 'com.google.android.gms:play-services:8.4.0'
 }
+
+apply plugin: 'com.google.gms.google-services'
