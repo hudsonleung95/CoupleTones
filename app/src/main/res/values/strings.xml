@@ -4,11 +4,24 @@
 
     <!-- used in AddActivity -->
     <string name="add_welcome">Welcome to CoupleTones</string>
-    <string name="add_btn">Add</string>
+    <string name="enter_App">Go To App</string>
     <string name="add_hints">Enter partner email here</string>
     <string name="add_ur_email">Your email:</string>
     <string name="add_init_email">cse110@gmail.com</string>
     <string name="add_no_email">(You have no Gmail signed in)</string>
+
+    <string name="invitation_title">Send App Invite Quickstart Invitation</string>
+    <string name="invitation_message">This app is terrific, give it a try</string>
+    <string name="invitation_deep_link">http://example.com/offer/five_dollar_offer</string>
+    <string name="invitation_custom_image">https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png</string>
+    <string name="invitation_cta">Install!</string>
+    <string name="invitation_subject">Try this great app!</string>
+
+    <string name="sent_invitations_fmt" formatted="false">Sent %d invitations</string>
+    <string name="send_failed">Sending invitations failed</string>
+    <string name="invite_dialog_title">You got an invitation!</string>
+    <string name="invite_friends">Invite Friends</string>
+    <string name="google_play_services_error">Google Play Services Error</string>
 
     <!-- used in HistoryActivity -->
     <string name="hist_empty">Your partner has not visited any of their favorite location</string>
