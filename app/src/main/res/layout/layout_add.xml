@@ -53,7 +53,7 @@
         android:layout_centerHorizontal="true"
         android:textAlignment="center"/>-->
 
-   <!-- <Button
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/enter_App"
@@ -70,7 +70,7 @@
         android:layout_below="@+id/add_tv_logo"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_marginTop="114dp" />-->
+        android:layout_marginTop="114dp" />
     <FrameLayout
         android:id="@+id/snackbar_layout"
         android:layout_width="match_parent"
