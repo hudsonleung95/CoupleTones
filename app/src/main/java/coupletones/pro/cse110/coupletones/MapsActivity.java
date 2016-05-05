@@ -1,10 +1,8 @@
 package coupletones.pro.cse110.coupletones;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -55,11 +53,15 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
+import com.google.gson.Gson;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class MapsActivity extends FragmentActivity
-        implements OnMapReadyCallback, OnConnectionFailedListener,OnMapLongClickListener, AddLocationDialog.LocationDialogListener
-{
+        implements OnMapReadyCallback, OnConnectionFailedListener,OnMapLongClickListener,
+        AddLocationDialog.LocationDialogListener, GoogleMap.OnMarkerDragListener, GoogleMap.OnInfoWindowLongClickListener{
     private GoogleMap mMap;
     private LocationManager locMan;
     private String locProv;
@@ -75,9 +77,10 @@ public class MapsActivity extends FragmentActivity
     private GoogleApiClient googleApi;
     private int img_width, img_height;
     private SharedPreferences sharedPreferences;
-    public static final String PREFERENCE_NAME = "PREFERENCE_DATA";
+    public static final String MARKERS = "LOCATION_DATA";
     private int numLoc;
     private LatLng latLng;
+    private List<Marker> markers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,8 +90,8 @@ public class MapsActivity extends FragmentActivity
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        sharedPreferences = getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
-
+        sharedPreferences = getSharedPreferences(MARKERS, Context.MODE_PRIVATE);
+        markers = new ArrayList<Marker>();
 
         //initialize google api client
         // ATTENTION: This "addApi(AppIndex.API)"was auto-generated to implement the App Indexing API.
@@ -117,39 +120,88 @@ public class MapsActivity extends FragmentActivity
         mMap = googleMap;
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.setOnMapLongClickListener(this);
+        mMap.setOnInfoWindowLongClickListener(this);
         init(); //initialize components
+        loadMarkers();
     }
 
     @Override
     public void onMapLongClick(LatLng point){
-
         latLng = point;
-
         DialogFragment dialog = new AddLocationDialog();
         dialog.show(getFragmentManager(), "Add Location?");
-
     }
 
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
-        MarkerOptions marker = new MarkerOptions().position(new LatLng(latLng.latitude,
-                latLng.longitude)).title("Added Location");
-        mMap.addMarker(marker);
-        //EditText editLoc = (EditText) dialog.findViewById(R.id.location_name);
-        //String locName = editLoc.getText().toString();
+        Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(latLng.latitude,
+                latLng.longitude)).draggable(true));
+//        markers.add(marker);
+//        numLoc++;
+        EditText editLoc = (EditText) dialog.getDialog().findViewById(R.id.location_name);
+        String locName = editLoc.getText().toString();
+        if(locName.matches("")){
+            //Default name for location
+            locName = "Favorite Location " + numLoc;
+        }
+        marker.setTitle(locName);
+        marker.showInfoWindow();
+        addMarkerToPref(marker);
 
-        numLoc++;
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        editor.putFloat("lat" + numLoc, (float) latLng.latitude);
+//        editor.putFloat("lng" + numLoc, (float) latLng.longitude);
+//        editor.putString("name" + numLoc, locName);
+//        editor.apply();
+    }
+
+    private void saveMarkerPrefs(){
+        String markersList = new Gson().toJson(markers);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putFloat("lat" + numLoc, (float) latLng.latitude);
-        editor.putFloat("lng" + numLoc, (float) latLng.longitude);
-        //editor.putString("name" + numLoc, locName);
+        editor.putString("favoriteLocations", markersList);
         editor.apply();
     }
 
-    @Override
-    public void onDialogNegativeClick(DialogFragment dialog) {
-
+    private void addMarkerToPref(Marker marker){
+        markers.add(marker);
+        numLoc++;
+//        saveMarkerPrefs();
     }
+
+    private void removeMarkerFromPref(Marker marker){
+        markers.remove(marker);
+        numLoc--;
+        saveMarkerPrefs();
+    }
+
+    private void loadMarkers(){
+        for(int i = 0; i < markers.size(); ++i){
+            LatLng point = markers.get(i).getPosition();
+            mMap.addMarker(new MarkerOptions().position(new LatLng(point.latitude, point.longitude))
+                    .draggable(true));
+        }
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {}
+
+    @Override
+    public void onMarkerDragEnd(Marker marker){
+//        int numMarker = markers.indexOf(marker);
+//        LatLng pos = marker.getPosition();
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        editor.putFloat("lat" + numMarker, (float) pos.latitude);
+//        editor.putFloat("lng" + numMarker, (float) pos.longitude);
+//        editor.apply();
+        saveMarkerPrefs();
+    }
+
+    @Override
+    public void onMarkerDragStart(Marker marker){}
+
+    @Override
+    public void onMarkerDrag(Marker marker){}
+
 
     /**
      * this method initialize the components used in the map
@@ -221,6 +273,11 @@ public class MapsActivity extends FragmentActivity
 
                 //save location coordinates in sharedPreferences
                 numLoc++;
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putFloat("lat" + numLoc, (float) place.getLatLng().latitude);
+                editor.putFloat("lng" + numLoc, (float) place.getLatLng().longitude);
+//                editor.putString("name" + numLoc, locName);
+                editor.apply();
 
                 //show location info after selecting a place from search bar
                 showPlaceInfo(place);
@@ -327,6 +384,12 @@ public class MapsActivity extends FragmentActivity
         );
         AppIndex.AppIndexApi.end(googleApi, viewAction);
         googleApi.disconnect();
+    }
+
+    @Override
+    public void onInfoWindowLongClick(Marker marker) {
+
+
     }
 
     /**

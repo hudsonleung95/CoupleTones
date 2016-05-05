@@ -9,6 +9,8 @@
     <string name="add_ur_email">Your email:</string>
     <string name="add_init_email">cse110@gmail.com</string>
     <string name="add_no_email">(You have no Gmail signed in)</string>
+    <string name="drawer_open">Opened</string>
+    <string name="drawer_close">Closed</string>
 
     <!-- used in HistoryActivity -->
     <string name="hist_empty">Your partner has not visited any of their favorite location</string>
@@ -16,4 +18,22 @@
 
     <!-- used in map -->
     <string name="map_info_add">Add to Favorite</string>
+    <string name="title_activity_welcome">WelcomeActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_main2">Main2Activity</string>
+
+    <!-- used in tutorial -->
+    <string name="tutorial_1_title">Add your partner</string>
+    <string name="tutorial_2_title">Set your favorite locations</string>
+    <string name="tutorial_3_title">Visit your locations</string>
+    <string name="tutorial_4_title">View partner updates</string>
+
+
+    <string name="tutorial_1_desc">Send your partner a request by entering their email</string>
+    <string name="tutorial_2_desc">Search or hold on the map to create a saved location</string>
+    <string name="tutorial_3_desc">When you arrive at a favorite location, your partner will receive a notification</string>
+    <string name="tutorial_4_desc">A list of your partner\'s visits to their favorite locations will be updated daily</string>
+
 </resources>

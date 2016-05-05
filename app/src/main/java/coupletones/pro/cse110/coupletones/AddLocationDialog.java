@@ -11,12 +11,11 @@ import android.view.View;
 
 public class AddLocationDialog extends DialogFragment {
     public interface LocationDialogListener {
-        public void onDialogPositiveClick(DialogFragment dialog);
-        public void onDialogNegativeClick(DialogFragment dialog);
+        void onDialogPositiveClick(DialogFragment dialog);
+        void onDialogNegativeClick(DialogFragment dialog);
     }
 
     LocationDialogListener lListener;
-    View view;
 
     @Override
     public void onAttach(Activity activity) {
@@ -35,10 +34,9 @@ public class AddLocationDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        view = inflater.inflate(R.layout.layout_dialog_add_location, null);
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
-        builder.setView(view)
+        builder.setView(inflater.inflate(R.layout.layout_dialog_add_location, null))
                 .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // Send the positive button event back to the host activity
