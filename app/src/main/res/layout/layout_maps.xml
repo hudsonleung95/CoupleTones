@@ -47,6 +47,8 @@
             android:layout_height="50dp"
             android:text="@string/drawer_name"
             android:background="#2F9BFF"
+            android:gravity="center_vertical"
+            android:textSize="21dp"
             android:id="@+id/drawer_tv_name"/>
 
         <EditText
