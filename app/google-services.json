@@ -1,0 +1,44 @@
+{
+  "project_info": {
+    "project_number": "851677903350",
+    "project_id": "nifty-rex-128601"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:851677903350:android:53772df7647e2cf8",
+        "android_client_info": {
+          "package_name": "coupletones.pro.cse110.coupletones"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "851677903350-k297kp7kitt5c570tvufhrrf108i9tlv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "coupletones.pro.cse110.coupletones",
+            "certificate_hash": "2CA58A7515424216EC6DEE2BF10B4FC27D1052B4"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCHDLUYZMvhlpbWDdsB9tbrhg027Czr3-E"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
