@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 
 public class AddLocationDialog extends DialogFragment {
     public interface LocationDialogListener {
@@ -17,6 +18,7 @@ public class AddLocationDialog extends DialogFragment {
 
     LocationDialogListener lListener;
     View view;
+    EditText editLoc;
 
     @Override
     public void onAttach(Activity activity) {
@@ -51,6 +53,17 @@ public class AddLocationDialog extends DialogFragment {
                         lListener.onDialogNegativeClick(AddLocationDialog.this);
                     }
                 });
+        editLoc = (EditText)view.findViewById(R.id.location_name);
         return builder.create();
+    }
+
+    /**
+     * this method get the name which user input when they add favorites
+     *
+     * @return
+     *     name of the location which user input
+     */
+    public String getNameFromUser(){
+        return editLoc.getText().toString();
     }
 }

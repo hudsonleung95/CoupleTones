@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">CoupleTones</string>
     <string name="title_activity_maps">Map</string>
+    <string name="fav_loc">Favorite Location</string>
 
     <!-- used in AddActivity -->
     <string name="add_welcome">Welcome to CoupleTones</string>
@@ -29,4 +30,10 @@
 
     <!-- used in map -->
     <string name="map_info_add">Add to Favorite</string>
+    <string name="map_ask_add">Add to Favorite?</string>
+
+    <!-- used in drawer -->
+    <string name="drawer_name">Name of Location</string>
+    <string name="drawer_save">Save Changes</string>
+    <string name="drawer_remove">Remove</string>
 </resources>

@@ -1,83 +1,55 @@
 package coupletones.pro.cse110.coupletones;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
-import android.os.AsyncTask;
-import android.provider.ContactsContract;
+import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.drive.Drive;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.PlacePhotoMetadata;
-import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
-import com.google.android.gms.location.places.PlacePhotoMetadataResult;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
-import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
-import java.util.Map;
 
 public class MapsActivity extends FragmentActivity
-        implements OnMapReadyCallback, OnConnectionFailedListener,OnMapLongClickListener, AddLocationDialog.LocationDialogListener
+        implements OnMapReadyCallback, OnConnectionFailedListener,OnMapLongClickListener,
+        AddLocationDialog.LocationDialogListener, GoogleMap.OnMarkerClickListener
 {
     private GoogleMap mMap;
     private LocationManager locMan;
     private String locProv;
-    private Marker curMark;
-    private Place curPlace;
     private static final float ZOOMLV = 13.5f;
     private DrawerLayout layout_drawer;
-    private LinearLayout layout_info;
-    private TextView tv_info_title;
-    private TextView tv_info_address;
-    private ImageView img_info_img;
-    private Button btn_addFav;
     private GoogleApiClient googleApi;
-    private int img_width, img_height;
     private SharedPreferences sharedPreferences;
     public static final String PREFERENCE_NAME = "PREFERENCE_DATA";
     private int numLoc;
-    private LatLng latLng;
+    private cLocation location; //for user selected location
+    private EditText et_drawer_name; //edit name field in drawer
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,32 +89,35 @@ public class MapsActivity extends FragmentActivity
         mMap = googleMap;
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.setOnMapLongClickListener(this);
+        mMap.setOnMarkerClickListener(this);
         init(); //initialize components
     }
 
     @Override
     public void onMapLongClick(LatLng point){
-
-        latLng = point;
-
-        DialogFragment dialog = new AddLocationDialog();
-        dialog.show(getFragmentManager(), "Add Location?");
-
+        location = new cLocation(point, MapsActivity.this);
+        openAddDialog();
     }
+
 
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
-        MarkerOptions marker = new MarkerOptions().position(new LatLng(latLng.latitude,
-                latLng.longitude)).title("Added Location");
+        String loc_name = ((AddLocationDialog)dialog).getNameFromUser();
+        //if user enters nothing
+        if ( loc_name.length() != 0){
+            location.setName(loc_name);
+        }
+
+        //put a marker if a user add to favorite
+        MarkerOptions marker = new MarkerOptions().position(new LatLng(location.getLatLng().latitude,
+                location.getLatLng().longitude)).title(location.getName());
         mMap.addMarker(marker);
-        //EditText editLoc = (EditText) dialog.findViewById(R.id.location_name);
-        //String locName = editLoc.getText().toString();
 
         numLoc++;
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putFloat("lat" + numLoc, (float) latLng.latitude);
-        editor.putFloat("lng" + numLoc, (float) latLng.longitude);
-        //editor.putString("name" + numLoc, locName);
+        editor.putFloat("lat" + numLoc, (float) location.getLatLng().latitude);
+        editor.putFloat("lng" + numLoc, (float) location.getLatLng().longitude);
+        editor.putString("name" + numLoc, location.getName());
         editor.apply();
     }
 
@@ -157,18 +132,11 @@ public class MapsActivity extends FragmentActivity
     private void init(){
         //drawer layers, used to show the info of location
         layout_drawer = (DrawerLayout)findViewById(R.id.map_drawer);
-        layout_info = (LinearLayout)findViewById(R.id.map_layout_info);
         //lock the drawer first, so empty drawer wont be dragged out
         layout_drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
         //views in the info layer
-        tv_info_title = (TextView)findViewById(R.id.map_info_tv_title);
-        tv_info_address = (TextView)findViewById(R.id.map_info_tv_address);
-        img_info_img = (ImageView)findViewById(R.id.map_info_img);
-        btn_addFav = (Button)findViewById(R.id.map_info_btn_add);
-
-        img_width = img_info_img.getWidth();
-        img_height = img_info_img.getHeight();
+        et_drawer_name = (EditText)findViewById(R.id.drawer_et_name);
 
         //used to get current location
         locMan = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
@@ -207,14 +175,7 @@ public class MapsActivity extends FragmentActivity
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-                curPlace = place; //save current searched place
-
-                //clear all previous marker
-                mMap.clear();
-
-                //put new marker in searched place
-                curMark = mMap.addMarker(new MarkerOptions().position(place.getLatLng())
-                       .title(place.getName().toString()));
+                location = new cLocation(place);
 
                 //move camera to searched place and zoom in
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), ZOOMLV));
@@ -222,8 +183,8 @@ public class MapsActivity extends FragmentActivity
                 //save location coordinates in sharedPreferences
                 numLoc++;
 
-                //show location info after selecting a place from search bar
-                showPlaceInfo(place);
+                //show the dialog for user to add
+                openAddDialog();
             }
 
             @Override
@@ -236,23 +197,15 @@ public class MapsActivity extends FragmentActivity
     /**
      * this method shows the info layer
      *
-     * @param place
-     *      place that user selected
+     * @param marker
+     *      marker clicked
      */
-    private void showPlaceInfo(Place place){
-        if (place != null){
+    private void showPlaceInfo(Marker marker){
+        if (marker != null){
             //unlock the drawer
             layout_drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
 
-            //clear the previous image
-            img_info_img.setImageResource(android.R.color.transparent);
-
-            //set information
-            tv_info_title.setText(place.getName());
-            tv_info_address.setText(place.getAddress());
-
-            //get and display the image in background
-            new getImageInBG().execute();
+            et_drawer_name.setText(marker.getTitle());
 
             //open the drawer layer from the right
             layout_drawer.openDrawer(Gravity.RIGHT);
@@ -270,6 +223,15 @@ public class MapsActivity extends FragmentActivity
 
         //close the info layer
         layout_drawer.closeDrawer(Gravity.RIGHT);
+    }
+
+    /**
+     * this method opens a dialog for the user to add location
+     * called after search/hold a location
+     */
+    private void openAddDialog(){
+        DialogFragment dialog = new AddLocationDialog();
+        dialog.show(getFragmentManager(), getText(R.string.map_ask_add).toString());
     }
 
     /**
@@ -329,53 +291,11 @@ public class MapsActivity extends FragmentActivity
         googleApi.disconnect();
     }
 
-    /**
-     * inner class getImageInBG()
-     *
-     * this will be called to download the image of the location in the backgroud
-     * TODO: fix later, not working for frequent download
-     *
-     */
-    private class getImageInBG extends AsyncTask<Void, Void, Bitmap>
+
+    @Override
+    public boolean onMarkerClick(Marker marker)
     {
-        @Override
-        protected Bitmap doInBackground(Void... params) {
-            PlacePhotoMetadataBuffer photoBuffer;
-
-            // Get a PlacePhotoMetadataResult containing metadata for the first 10 photos.
-            PlacePhotoMetadataResult result = Places.GeoDataApi
-                    .getPlacePhotos(googleApi, curPlace.getId()).await();
-            // Get a PhotoMetadataBuffer instance containing a list of photos (PhotoMetadata).
-            if (result != null && result.getStatus().isSuccess()) {
-                photoBuffer = result.getPhotoMetadata();
-
-                //if the place have photo
-                if (photoBuffer.getCount() > 0) {
-                    // get the first bitmap in an ImageView in the size of the view
-                    Bitmap img = photoBuffer.get(0)
-                            .getScaledPhoto(googleApi, img_width, img_height).await().getBitmap();
-
-                    //have to release the buffer to prevent memory leak
-                    photoBuffer.release();
-
-                    return img;
-                }
-
-                //release buffer although no photo
-                photoBuffer.release();
-            }
-
-            //if no result or fail
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap img) {
-            if(img != null) //got image
-                img_info_img.setImageBitmap(img);
-            else //else, just set to gallery icon
-                img_info_img.setImageResource(android.R.drawable.ic_menu_gallery);
-        }
+        showPlaceInfo(marker);
+        return true;
     }
-
 }
