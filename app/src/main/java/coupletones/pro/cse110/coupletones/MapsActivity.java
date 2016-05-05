@@ -28,6 +28,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
@@ -35,6 +36,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.drive.Drive;
+import com.google.android.gms.drive.internal.StringListResponse;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlacePhotoMetadata;
@@ -56,6 +58,7 @@ import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -73,9 +76,10 @@ public class MapsActivity extends FragmentActivity
     private SharedPreferences sharedPreferences;
     public static final String MARKERS = "LOCATION_DATA";
     private int numLoc;
-    private List<Marker> markers;
     private cLocation location; //for user selected location
     private EditText et_drawer_name; //edit name field in drawer
+    private List<LatLng> latLngs;
+    private List<String> locationNames;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,8 +90,8 @@ public class MapsActivity extends FragmentActivity
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         sharedPreferences = getSharedPreferences(MARKERS, Context.MODE_PRIVATE);
-        markers = new ArrayList<Marker>();
-
+        latLngs = new ArrayList<LatLng>();
+        locationNames = new ArrayList<String>();
         //initialize google api client
         // ATTENTION: This "addApi(AppIndex.API)"was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -143,41 +147,53 @@ public class MapsActivity extends FragmentActivity
                 .title(location.getName()).draggable(true));
 
         numLoc++;
-
         marker.showInfoWindow();
-//        addMarkerToPref(marker);
+        addMarkerToPref(marker);
 
-//        SharedPreferences.Editor editor = sharedPreferences.edit();
-//        editor.putFloat("lat" + numLoc, (float) latLng.latitude);
-//        editor.putFloat("lng" + numLoc, (float) latLng.longitude);
-//        editor.putString("name" + numLoc, locName);
-//        editor.apply();
     }
 
     private void saveMarkerPrefs(){
-        String markersList = new Gson().toJson(markers);
+        //String markersList = new Gson().toJson(markers);
+        String latLngsList = new Gson().toJson(latLngs);
+        String namesList = new Gson().toJson(locationNames);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("favoriteLocations", markersList);
-        editor.apply();
+        editor.putString("LatLngs", latLngsList);
+        editor.putString("LocNames", namesList);
+        editor.commit();
+
     }
 
     private void addMarkerToPref(Marker marker){
-        markers.add(marker);
-        numLoc++;
-//        saveMarkerPrefs();
+        latLngs.add(marker.getPosition());
+        locationNames.add(marker.getTitle());
+        saveMarkerPrefs();
     }
 
     private void removeMarkerFromPref(Marker marker){
-        markers.remove(marker);
+        latLngs.remove(marker.getPosition());
+        locationNames.remove(marker.getTitle());
         numLoc--;
         saveMarkerPrefs();
     }
 
     private void loadMarkers(){
-        for(int i = 0; i < markers.size(); ++i){
-            LatLng point = markers.get(i).getPosition();
+        String favFromJson = sharedPreferences.getString("LatLngs", null);
+        LatLng[] favLatLng = new Gson().fromJson(favFromJson, LatLng[].class);
+        String favNamesFromJson = sharedPreferences.getString("LocNames", null);
+        String[] favNames = new Gson().fromJson(favNamesFromJson, String[].class);
+
+        latLngs = Arrays.asList(favLatLng);
+        latLngs = new ArrayList<LatLng>(latLngs);
+        locationNames = Arrays.asList(favNames);
+        locationNames = new ArrayList<String>(locationNames);
+
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        for(int i = 0; i < latLngs.size(); i++){
+            LatLng point = latLngs.get(i);
+            String name = locationNames.get(i);
             mMap.addMarker(new MarkerOptions().position(new LatLng(point.latitude, point.longitude))
-                    .draggable(true));
+                    .draggable(true).title(name));
         }
     }
 
