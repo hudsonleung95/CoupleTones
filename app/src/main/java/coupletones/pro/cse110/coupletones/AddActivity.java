@@ -21,6 +21,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import android.support.design.widget.Snackbar;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.LocationServices;
 
 
 public class AddActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener,
@@ -36,11 +37,10 @@ public class AddActivity extends AppCompatActivity implements GoogleApiClient.On
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_add);
+
         tv_ur_email = (TextView)findViewById(R.id.add_tv_id);
         setEmail();
         findViewById(R.id.invite_button).setOnClickListener(this);
-
-
 
         // Create an auto-managed GoogleApiClient with acccess to App Invites.
         mGoogleApiClient = new GoogleApiClient.Builder(this)

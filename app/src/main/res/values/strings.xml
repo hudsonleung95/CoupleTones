@@ -54,9 +54,11 @@
     <!-- used in drawer -->
     <string name="drawer_open">Opened</string>
     <string name="drawer_close">Closed</string>
-    <string name="drawer_name">Name of Location</string>
-    <string name="drawer_remove">Remove</string>
+    <string name="drawer_name">Name of Location:</string>
+    <string name="drawer_remove">Remove Location</string>
     <string name="drawer_save">Save</string>
     <string name="map_ask_add">Add Location?</string>
+    <string name="edit_location">Edit Location:</string>
+    <string name="drawer_cancel">Cancel</string>
 
 </resources>

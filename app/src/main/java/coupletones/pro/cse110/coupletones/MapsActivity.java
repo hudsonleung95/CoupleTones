@@ -1,8 +1,10 @@
 package coupletones.pro.cse110.coupletones;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -57,6 +59,8 @@ import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListe
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.gson.Gson;
 
+import junit.framework.Assert;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -75,11 +79,11 @@ public class MapsActivity extends FragmentActivity
     private GoogleApiClient googleApi;
     private SharedPreferences sharedPreferences;
     public static final String MARKERS = "LOCATION_DATA";
-    private int numLoc;
     private cLocation location; //for user selected location
     private EditText et_drawer_name; //edit name field in drawer
     private List<LatLng> latLngs;
     private List<String> locationNames;
+    private final Context context = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,6 +124,7 @@ public class MapsActivity extends FragmentActivity
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.setOnMapLongClickListener(this);
         mMap.setOnMarkerClickListener(this);
+        mMap.setOnMarkerDragListener(this);
         init(); //initialize components
         loadMarkers();
     }
@@ -146,21 +151,18 @@ public class MapsActivity extends FragmentActivity
                 location.getLatLng().longitude))
                 .title(location.getName()).draggable(true));
 
-        numLoc++;
         marker.showInfoWindow();
         addMarkerToPref(marker);
 
     }
 
     private void saveMarkerPrefs(){
-        //String markersList = new Gson().toJson(markers);
         String latLngsList = new Gson().toJson(latLngs);
         String namesList = new Gson().toJson(locationNames);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("LatLngs", latLngsList);
         editor.putString("LocNames", namesList);
-        editor.commit();
-
+        editor.apply();
     }
 
     private void addMarkerToPref(Marker marker){
@@ -172,7 +174,18 @@ public class MapsActivity extends FragmentActivity
     private void removeMarkerFromPref(Marker marker){
         latLngs.remove(marker.getPosition());
         locationNames.remove(marker.getTitle());
-        numLoc--;
+        saveMarkerPrefs();
+    }
+
+    private void removeMarkerFromMap(Marker marker){
+        marker.remove();
+        removeMarkerFromPref(marker);
+    }
+
+    private void changeMarkerName(Marker marker, String newName){
+        int indexOf = locationNames.indexOf(marker.getTitle());
+        locationNames.set(indexOf, newName);
+        marker.setTitle(newName);
         saveMarkerPrefs();
     }
 
@@ -187,8 +200,6 @@ public class MapsActivity extends FragmentActivity
         locationNames = Arrays.asList(favNames);
         locationNames = new ArrayList<String>(locationNames);
 
-//        SharedPreferences.Editor editor = sharedPreferences.edit();
-
         for(int i = 0; i < latLngs.size(); i++){
             LatLng point = latLngs.get(i);
             String name = locationNames.get(i);
@@ -202,17 +213,13 @@ public class MapsActivity extends FragmentActivity
 
     @Override
     public void onMarkerDragEnd(Marker marker){
-//        int numMarker = markers.indexOf(marker);
-//        LatLng pos = marker.getPosition();
-//        SharedPreferences.Editor editor = sharedPreferences.edit();
-//        editor.putFloat("lat" + numMarker, (float) pos.latitude);
-//        editor.putFloat("lng" + numMarker, (float) pos.longitude);
-//        editor.apply();
+        int indexOf = locationNames.indexOf(marker.getTitle());
+        latLngs.set(indexOf, marker.getPosition());
         saveMarkerPrefs();
     }
 
     @Override
-    public void onMarkerDragStart(Marker marker){}
+    public void onMarkerDragStart(Marker marker){ }
 
     @Override
     public void onMarkerDrag(Marker marker){}
@@ -272,9 +279,6 @@ public class MapsActivity extends FragmentActivity
                 //move camera to searched place and zoom in
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), ZOOMLV));
 
-                //save location coordinates in sharedPreferences
-                numLoc++;
-
                 //show the dialog for user to add
                 openAddDialog();
             }
@@ -301,20 +305,64 @@ public class MapsActivity extends FragmentActivity
 
             //open the drawer layer from the right
             layout_drawer.openDrawer(Gravity.RIGHT);
+
+            final Marker markerCopy = marker;
+
+            Button remove = (Button) findViewById(R.id.drawer_btn_remove);
+            remove.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    layout_drawer.closeDrawer(Gravity.RIGHT);
+                    layout_drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+                    // set dialog message
+                    alertDialogBuilder
+                            .setMessage("Are you sure you want to remove location?")
+                            .setCancelable(false)
+                            .setPositiveButton("Remove",new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,int id) {
+                                    removeMarkerFromMap(markerCopy);
+                                    Toast.makeText(getApplicationContext(), "Location Removed", Toast.LENGTH_SHORT).show();
+                                }
+                            })
+                            .setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,int id) {
+                                    // if this button is clicked, just close
+                                    // the dialog box and do nothing
+                                    dialog.cancel();
+                                }
+                            });
+
+                    // create alert dialog
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    alertDialog.show();
+                }
+            });
+
+
+            Button cancel = (Button) findViewById(R.id.drawer_btn_cancel);
+            cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    layout_drawer.closeDrawer(Gravity.RIGHT);
+                    layout_drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+                }
+            });
+
+            Button save = (Button) findViewById(R.id.drawer_btn_save);
+            save.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    EditText editName = (EditText) findViewById(R.id.drawer_et_name);
+                    String editedName = editName.getText().toString();
+                    changeMarkerName(markerCopy, editedName);
+                    Toast.makeText(getApplicationContext(), "Name Saved", Toast.LENGTH_SHORT).show();
+                    layout_drawer.closeDrawer(Gravity.RIGHT);
+                    layout_drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+                }
+            });
         }
-    }
-
-    /**
-     * this method will be called when user click the add button in the info layer
-     *
-     * @param v
-     *      view that call this method
-     */
-    public void addToFav(View v){
-        //TODO store the location to favorite
-
-        //close the info layer
-        layout_drawer.closeDrawer(Gravity.RIGHT);
     }
 
     /**
