@@ -7,64 +7,42 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
-import android.os.AsyncTask;
-import android.provider.ContactsContract;
+import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.drive.Drive;
-import com.google.android.gms.drive.internal.StringListResponse;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.PlacePhotoMetadata;
-import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
-import com.google.android.gms.location.places.PlacePhotoMetadataResult;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
-import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.gson.Gson;
-
-import junit.framework.Assert;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 public class MapsActivity extends FragmentActivity
         implements OnMapReadyCallback, OnConnectionFailedListener,OnMapLongClickListener,
@@ -78,12 +56,12 @@ public class MapsActivity extends FragmentActivity
     private DrawerLayout layout_drawer;
     private GoogleApiClient googleApi;
     private SharedPreferences sharedPreferences;
-    public static final String MARKERS = "LOCATION_DATA";
     private cLocation location; //for user selected location
     private EditText et_drawer_name; //edit name field in drawer
     private List<LatLng> latLngs;
     private List<String> locationNames;
     private final Context context = this;
+    private DataStorage dataStorage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +71,7 @@ public class MapsActivity extends FragmentActivity
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        sharedPreferences = getSharedPreferences(MARKERS, Context.MODE_PRIVATE);
+        dataStorage = new DataStorage(this);
         latLngs = new ArrayList<LatLng>();
         locationNames = new ArrayList<String>();
         //initialize google api client
@@ -159,10 +137,8 @@ public class MapsActivity extends FragmentActivity
     private void saveMarkerPrefs(){
         String latLngsList = new Gson().toJson(latLngs);
         String namesList = new Gson().toJson(locationNames);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("LatLngs", latLngsList);
-        editor.putString("LocNames", namesList);
-        editor.apply();
+        dataStorage.setLatLngList(latLngsList);
+        dataStorage.setLocNameList(namesList);
     }
 
     private void addMarkerToPref(Marker marker){
@@ -190,8 +166,8 @@ public class MapsActivity extends FragmentActivity
     }
 
     private void loadMarkers(){
-        String favLatLngFromJson = sharedPreferences.getString("LatLngs", null);
-        String favNamesFromJson = sharedPreferences.getString("LocNames", null);
+        String favLatLngFromJson = dataStorage.getLatLngList();
+        String favNamesFromJson = dataStorage.getLocNameList();
 
         if(favNamesFromJson != null && favLatLngFromJson != null){
             String[] favNames = new Gson().fromJson(favNamesFromJson, String[].class);

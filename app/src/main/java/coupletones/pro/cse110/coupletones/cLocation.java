@@ -44,7 +44,7 @@ public class cLocation
 
 
     /**
-     * this method tries to get a name/address from the latLng
+     * this method tries to get a name/address from the locations
      *
      * @return
      *      if found, return given name

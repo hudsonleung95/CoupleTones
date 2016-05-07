@@ -3,14 +3,35 @@
     <string name="title_activity_maps">Map</string>
     <string name="fav_loc">Favorite Location</string>
 
+    <string name="project_id">851677903350</string>
+
+    <string name="parse_app_id">QOKYPsGpAqoszqqhRwwWArAVYETxpz3RoJVQuN4I</string>
+    <string name="parse_client_key">4BE7W4sjKj3ABpDzK7SbQGUOsJfICTtVvo6svQNk</string>
+
+    <!-- KEYS for parse and sharedpreferences -->
+    <string name="parse_key_installid">installationId</string>
+    <string name="parse_key_table_install">_Installation</string>
+    <string name="sp_key_location">LOCATION</string>
+    <string name="sp_key_parse_ids">PARSE_IDS</string>
+    <string name="sp_key_setting">USER_SETTING</string>
+    <string name="sp_key_list_latlng">LIST_LATLNG</string>
+    <string name="sp_key_list_locname">LIST_LOC_NAME</string>
+    <string name="sp_key_item_partnerid">PARTNER_ID</string>
+    <string name="sp_key_item_selfid">SELF_ID</string>
+    <string name="sp_key_item_first_time">FIRST_TIME</string>
+    <string name="pc_checking">Checking ID...</string>
+
     <!-- used in AddActivity -->
     <string name="add_welcome">Let\'s Get Started</string>
     <string name="add_btn">Add</string>
-    <string name="add_hints">Enter partner email here</string>
+    <string name="add_hints">Enter partner\'s ID here</string>
     <string name="add_ur_email">Your email:</string>
     <string name="add_init_email">cse110@gmail.com</string>
     <string name="add_no_email">(You have no Gmail signed in)</string>
-    <string name="enter_app">Go To App</string>
+    <string name="add_enter_app">Go To App</string>
+    <string name="add_ur_id">Your ID:</string>
+    <string name="add_warn_empty_input">Please input a valid ID</string>
+    <string name="add_warn_id_notfound">ID not found, Please try again</string>
 
 
 
