@@ -84,5 +84,8 @@
     <string name="map_ask_add">Add Location?</string>
     <string name="edit_location">Edit Location:</string>
     <string name="drawer_cancel">Cancel</string>
+    <string name="title_activity_show_list">ShowListActivity</string>
+    <string name="title_activity_edit_location">EditLocationActivity</string>
+
 
 </resources>

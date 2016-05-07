@@ -37,7 +37,7 @@ public class HistoryActivity extends AppCompatActivity
         settingsDrawer = (DrawerLayout) findViewById(R.id.drawer_settings_layout);
         settingsList = (ListView) findViewById(R.id.settings_list);
 
-        String[] settingsArr = { "Partner Settings", "Help", "About" };
+        String[] settingsArr = { "Partner Settings", "Location List Settings", "Help" };
         settingsAdapter = new ArrayAdapter<String>(this, R.layout.layout_list_item, settingsArr);
         settingsList.setAdapter(settingsAdapter);
         settingsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -47,10 +47,12 @@ public class HistoryActivity extends AppCompatActivity
                     case 0:
                         break;
                     case 1:
-                        Intent introIntent = new Intent(HistoryActivity.this, WelcomeActivity.class);
-                        startActivity(introIntent);
+                        Intent showListIntent = new Intent(HistoryActivity.this, ShowListActivity.class);
+                        startActivity(showListIntent);
                         break;
                     case 2:
+                        Intent introIntent = new Intent(HistoryActivity.this, WelcomeActivity.class);
+                        startActivity(introIntent);
                         break;
                 }
             }
