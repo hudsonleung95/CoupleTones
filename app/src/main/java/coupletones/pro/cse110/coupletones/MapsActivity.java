@@ -190,21 +190,24 @@ public class MapsActivity extends FragmentActivity
     }
 
     private void loadMarkers(){
-        String favFromJson = sharedPreferences.getString("LatLngs", null);
-        LatLng[] favLatLng = new Gson().fromJson(favFromJson, LatLng[].class);
+        String favLatLngFromJson = sharedPreferences.getString("LatLngs", null);
         String favNamesFromJson = sharedPreferences.getString("LocNames", null);
-        String[] favNames = new Gson().fromJson(favNamesFromJson, String[].class);
 
-        latLngs = Arrays.asList(favLatLng);
-        latLngs = new ArrayList<LatLng>(latLngs);
-        locationNames = Arrays.asList(favNames);
-        locationNames = new ArrayList<String>(locationNames);
+        if(favNamesFromJson != null && favLatLngFromJson != null){
+            String[] favNames = new Gson().fromJson(favNamesFromJson, String[].class);
+            LatLng[] favLatLng = new Gson().fromJson(favLatLngFromJson, LatLng[].class);
 
-        for(int i = 0; i < latLngs.size(); i++){
-            LatLng point = latLngs.get(i);
-            String name = locationNames.get(i);
-            mMap.addMarker(new MarkerOptions().position(new LatLng(point.latitude, point.longitude))
-                    .draggable(true).title(name));
+            latLngs = Arrays.asList(favLatLng);
+            latLngs = new ArrayList<LatLng>(latLngs);
+            locationNames = Arrays.asList(favNames);
+            locationNames = new ArrayList<String>(locationNames);
+
+            for (int i = 0; i < latLngs.size(); i++) {
+                LatLng point = latLngs.get(i);
+                String name = locationNames.get(i);
+                mMap.addMarker(new MarkerOptions().position(new LatLng(point.latitude, point.longitude))
+                        .draggable(true).title(name));
+            }
         }
     }
 

@@ -4,6 +4,7 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.appinvite.AppInvite;
@@ -24,13 +26,13 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.LocationServices;
 
 
-public class AddActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener,
-        View.OnClickListener
+public class AddActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener
 {
     private static final String TAG = AddActivity.class.getSimpleName();
-    private TextView tv_ur_email;
     private static final int REQUEST_INVITE = 0;
     private GoogleApiClient mGoogleApiClient;
+    private SharedPreferences sharedPreferences;
+    private static final String USER_SETTINGS = "USER_SETTINGS";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -38,9 +40,16 @@ public class AddActivity extends AppCompatActivity implements GoogleApiClient.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_add);
 
-        tv_ur_email = (TextView)findViewById(R.id.add_tv_id);
+        sharedPreferences = getSharedPreferences(USER_SETTINGS, Context.MODE_PRIVATE);
+        if(sharedPreferences.getBoolean("FIRST_TIME", true)){
+            Intent introIntent = new Intent(AddActivity.this, WelcomeActivity.class);
+            startActivity(introIntent);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("FIRST_TIME", false);
+            editor.apply();
+        }
+
         setEmail();
-        findViewById(R.id.invite_button).setOnClickListener(this);
 
         // Create an auto-managed GoogleApiClient with acccess to App Invites.
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -63,6 +72,23 @@ public class AddActivity extends AppCompatActivity implements GoogleApiClient.On
                                 // an Activity to launch to handle the deep link here.
                             }
                         });
+        Button goToApp = (Button) findViewById(R.id.enter_app_button);
+        assert goToApp != null;
+        goToApp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(AddActivity.this, HistoryActivity.class));
+            }
+        });
+
+        Button invite = (Button) findViewById(R.id.invite_button);
+        assert invite != null;
+        invite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onInviteClicked();
+            }
+        });
     }
 
     @Override
@@ -83,12 +109,11 @@ public class AddActivity extends AppCompatActivity implements GoogleApiClient.On
      * @param v
      *      view that call this method
      */
-    public void addPartner(View v){
-        //TODO check id pairing status
-
-        //go to the hist
-        startActivity(new Intent(this, HistoryActivity.class));
-    }
+//    public void addPartner(View v){
+//
+//        //go to the hist
+//        startActivity(new Intent(this, HistoryActivity.class));
+//    }
 
     /**
      * this method set the email TextView to user's first gmail
@@ -97,11 +122,12 @@ public class AddActivity extends AppCompatActivity implements GoogleApiClient.On
      */
     private void setEmail(){
         String email = getEmail();
+        TextView user_email = (TextView) findViewById(R.id.add_tv_id);
 
         if(email == null)
-            tv_ur_email.setText(getText(R.string.add_no_email));
+            user_email.setText(getText(R.string.add_no_email));
         else
-            tv_ur_email.setText(email);
+            user_email.setText(email);
     }
 
     /**
@@ -120,17 +146,17 @@ public class AddActivity extends AppCompatActivity implements GoogleApiClient.On
         return email;
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.invite_button:
-                onInviteClicked();
-                break;
-            case R.id.enter_App:
-                break;
-        }
-
-    }
+//    @Override
+//    public void onClick(View v) {
+//        switch (v.getId()) {
+//            case R.id.invite_button:
+//                onInviteClicked();
+//                break;
+//            case R.id.enter_app_button:
+//                break;
+//        }
+//
+//    }
 
     private void onInviteClicked() {
         Intent intent = new AppInviteInvitation

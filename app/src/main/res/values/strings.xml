@@ -4,13 +4,13 @@
     <string name="fav_loc">Favorite Location</string>
 
     <!-- used in AddActivity -->
-    <string name="add_welcome">Welcome to CoupleTones</string>
+    <string name="add_welcome">Let\'s Get Started</string>
     <string name="add_btn">Add</string>
     <string name="add_hints">Enter partner email here</string>
     <string name="add_ur_email">Your email:</string>
     <string name="add_init_email">cse110@gmail.com</string>
     <string name="add_no_email">(You have no Gmail signed in)</string>
-    <string name="enter_App">Go To App</string>
+    <string name="enter_app">Go To App</string>
 
 
 
@@ -27,16 +27,19 @@
     <string name="title_activity_main2">Main2Activity</string>
 
     <!-- used in tutorial -->
+    <string name="tutorial_0_title">Welcome to CoupleTones</string>
     <string name="tutorial_1_title">Add your partner</string>
     <string name="tutorial_2_title">Set your favorite locations</string>
-    <string name="tutorial_3_title">Visit your locations</string>
-    <string name="tutorial_4_title">View partner updates</string>
+    <string name="tutorial_3_title">Customize locations</string>
+    <string name="tutorial_4_title">Visit your locations</string>
+    <string name="tutorial_5_title">View partner updates</string>
 
-
+    <string name="tutorial_0_desc">CoupleTones allows you to share location updates with your partner</string>
     <string name="tutorial_1_desc">Send your partner a request by entering their email</string>
     <string name="tutorial_2_desc">Search or hold on the map to create a saved location</string>
-    <string name="tutorial_3_desc">When you arrive at a favorite location, your partner will receive a notification</string>
-    <string name="tutorial_4_desc">A list of your partner\'s visits to their favorite locations will be updated daily</string>
+    <string name="tutorial_3_desc">Tap on a saved location to change its name</string>
+    <string name="tutorial_4_desc">When you arrive at a favorite location, your partner will receive a notification</string>
+    <string name="tutorial_5_desc">A list of your partner\'s visits to their favorite locations will be updated daily</string>
 
     <string name="invitation_title">Send App Invite Quickstart Invitation</string>
     <string name="invitation_message">This app is terrific, give it a try</string>

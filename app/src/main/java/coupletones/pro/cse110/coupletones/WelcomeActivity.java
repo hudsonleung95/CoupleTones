@@ -45,8 +45,8 @@ public class WelcomeActivity extends AppCompatActivity {
     private ImageButton nextBtn;
     private Button skipBtn, finishBtn;
     private ImageView[] indicators;
-    private ImageView in0, in1, in2, in3;
-    private int numScreens = 4;
+    private ImageView in0, in1, in2, in3, in4, in5;
+    private int numScreens = 6;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +60,9 @@ public class WelcomeActivity extends AppCompatActivity {
         in1 = (ImageView) findViewById(R.id.intro_indicator_1);
         in2 = (ImageView) findViewById(R.id.intro_indicator_2);
         in3 = (ImageView) findViewById(R.id.intro_indicator_3);
-        indicators = new ImageView[] {in0, in1, in2, in3};
+        in4 = (ImageView) findViewById(R.id.intro_indicator_4);
+        in5 = (ImageView) findViewById(R.id.intro_indicator_5);
+        indicators = new ImageView[] {in0, in1, in2, in3, in4, in5};
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -71,12 +73,14 @@ public class WelcomeActivity extends AppCompatActivity {
         mViewPager.setCurrentItem(page);
         updateIndicators(page);
 
-        final int color1 = Color.parseColor("#80CBC4");
+        final int color1 = Color.parseColor("#FF8A65");
         final int color2 = Color.parseColor("#AED581");
         final int color3 = Color.parseColor("#B0BEC5");
-        final int color4 = Color.parseColor("#FF8A65");
+        final int color4 = Color.parseColor("#80CBC4");
+        final int color5 = Color.parseColor("#7986CB");
+        final int color6 = Color.parseColor("#9CCC65");
 
-        final int[] colors = new int[]{color1, color2, color3, color4};
+        final int[] colors = new int[]{color1, color2, color3, color4, color5, color6};
         final ArgbEvaluator eval = new ArgbEvaluator();
 
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -104,6 +108,12 @@ public class WelcomeActivity extends AppCompatActivity {
                         break;
                     case 3:
                         mViewPager.setBackgroundColor(color4);
+                        break;
+                    case 4:
+                        mViewPager.setBackgroundColor(color5);
+                        break;
+                    case 5:
+                        mViewPager.setBackgroundColor(color6);
                         break;
                 }
                 nextBtn.setVisibility(position == numScreens - 1 ? View.GONE : View.VISIBLE);
@@ -157,10 +167,10 @@ public class WelcomeActivity extends AppCompatActivity {
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
-        int[] titles = new int[] {R.string.tutorial_1_title, R.string.tutorial_2_title,
-                R.string.tutorial_3_title, R.string.tutorial_4_title};
-        int[] descriptions = new int[] {R.string.tutorial_1_desc, R.string.tutorial_2_desc,
-                R.string.tutorial_3_desc, R.string.tutorial_4_desc};
+        int[] titles = new int[] {R.string.tutorial_0_title, R.string.tutorial_1_title, R.string.tutorial_2_title,
+                R.string.tutorial_3_title, R.string.tutorial_4_title, R.string.tutorial_5_title};
+        int[] descriptions = new int[] {R.string.tutorial_0_desc, R.string.tutorial_1_desc, R.string.tutorial_2_desc,
+                R.string.tutorial_3_desc, R.string.tutorial_4_desc, R.string.tutorial_5_desc};
 
         public PlaceholderFragment() {
         }
@@ -209,7 +219,7 @@ public class WelcomeActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             // Show 4 total pages.
-            return 4;
+            return numScreens;
         }
 
         @Override
