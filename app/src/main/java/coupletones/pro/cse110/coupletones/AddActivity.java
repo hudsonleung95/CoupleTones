@@ -38,7 +38,10 @@ public class AddActivity extends AppCompatActivity
             startActivity(new Intent(AddActivity.this, WelcomeActivity.class));
             dataStorage.setFirstTime(false);
         }
-
+        else
+        {
+            startActivity(new Intent(AddActivity.this, HistoryActivity.class));
+        }
 
 //        // Create an auto-managed GoogleApiClient with acccess to App Invites.
 //        mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -115,8 +118,8 @@ public class AddActivity extends AppCompatActivity
 
             return;
         }
-        inputId = "31864be7-914f-4b71-bd33-f4e6cbe42704"; //TODO: del later, mac test id
-//        inputId = "8c35f813-024b-4660-9618-d6262ef3067e"; //TODO: del later, desktop test id
+      //  inputId = "31864be7-914f-4b71-bd33-f4e6cbe42704"; //TODO: del later, mac test id
+      //  inputId = "8c35f813-024b-4660-9618-d6262ef3067e"; //TODO: del later, desktop test id
         parseClient.checkId(inputId);
     }
 
