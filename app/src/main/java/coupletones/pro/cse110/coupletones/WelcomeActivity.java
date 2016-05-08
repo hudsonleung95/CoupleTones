@@ -169,8 +169,12 @@ public class WelcomeActivity extends AppCompatActivity {
         private static final String ARG_SECTION_NUMBER = "section_number";
         int[] titles = new int[] {R.string.tutorial_0_title, R.string.tutorial_1_title, R.string.tutorial_2_title,
                 R.string.tutorial_3_title, R.string.tutorial_4_title, R.string.tutorial_5_title};
-        int[] descriptions = new int[] {R.string.tutorial_0_desc, R.string.tutorial_1_desc, R.string.tutorial_2_desc,
+        int[] descriptions = new int[] {R.string.tutorial_0_desc,
+                R.string.tutorial_1_desc, R.string.tutorial_2_desc,
                 R.string.tutorial_3_desc, R.string.tutorial_4_desc, R.string.tutorial_5_desc};
+        int[] images = new int[] {R.drawable.ic_people_outline_black_24dp, R.drawable.ic_person_add_black_24dp,
+                R.drawable.ic_add_location_black_24dp, R.drawable.ic_mode_edit_black_24dp,
+                R.drawable.ic_directions_walk_black_24dp, R.drawable.ic_format_list_bulleted_black_24dp};
 
         public PlaceholderFragment() {
         }
@@ -195,6 +199,8 @@ public class WelcomeActivity extends AppCompatActivity {
             titleView.setText(titles[getArguments().getInt(ARG_SECTION_NUMBER) - 1]);
             TextView descView = (TextView) rootView.findViewById(R.id.section_desc);
             descView.setText(descriptions[getArguments().getInt(ARG_SECTION_NUMBER) - 1]);
+            ImageView img = (ImageView) rootView.findViewById(R.id.section_img);
+            img.setBackgroundResource(images[getArguments().getInt(ARG_SECTION_NUMBER) - 1]);
             return rootView;
         }
     }

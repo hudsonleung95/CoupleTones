@@ -62,6 +62,7 @@ public class MapsActivity extends FragmentActivity
     private List<String> locationNames;
     private final Context context = this;
     private DataStorage dataStorage;
+    private Location currMarkerLoc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -198,10 +199,13 @@ public class MapsActivity extends FragmentActivity
     }
 
     @Override
-    public void onMarkerDragStart(Marker marker){ }
+    public void onMarkerDragStart(Marker marker){
+        int indexOf = locationNames.indexOf(marker.getTitle());
+        marker.setPosition(latLngs.get(indexOf));
+    }
 
     @Override
-    public void onMarkerDrag(Marker marker){}
+    public void onMarkerDrag(Marker marker){ }
 
 
     /**

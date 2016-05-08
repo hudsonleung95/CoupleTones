@@ -67,7 +67,7 @@ public class ParseClient
                 //if exist
                 if (commentList != null){
                     data.setPartnerId(id); //save partner id
-                    sendNotification("TEST NOTI");
+//                    sendNotification("TEST NOTI");
                     context.startActivity(new Intent(context, HistoryActivity.class));
                 }else
                     Toast.makeText(context,

@@ -3,6 +3,7 @@ package coupletones.pro.cse110.coupletones;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -32,6 +33,7 @@ public class AddActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_add);
         init();
+
         if(dataStorage.getFirstTime()){
             startActivity(new Intent(AddActivity.this, WelcomeActivity.class));
             dataStorage.setFirstTime(false);
