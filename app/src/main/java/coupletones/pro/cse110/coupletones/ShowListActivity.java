@@ -25,7 +25,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class ShowListActivity extends AppCompatActivity implements EditLocationDialog.LocationDialogListener{
+public class ShowListActivity extends AppCompatActivity
+        implements EditLocationDialog.LocationDialogListener {
 
     private DataStorage dataStorage;
     private List<LatLng> latLngs;
@@ -94,7 +95,8 @@ public class ShowListActivity extends AppCompatActivity implements EditLocationD
             locationNames = new ArrayList<String>(locationNames);
 
             adapter = new ArrayAdapter(this,
-                    android.R.layout.simple_list_item_1, locationNames);
+                    R.layout.list_item_mylocation,
+                    R.id.list_item_mylocation_textview, locationNames);
 
             if (listview != null) {
                 listview.setAdapter(adapter);

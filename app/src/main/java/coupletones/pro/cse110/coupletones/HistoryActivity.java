@@ -16,6 +16,7 @@ import android.widget.ListView;
 
 public class HistoryActivity extends AppCompatActivity
 {
+    private DataStorage dataStorage;
     ListView list;
     private DrawerLayout settingsDrawer;
     private ListView settingsList;
@@ -28,6 +29,7 @@ public class HistoryActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_history);
+        dataStorage = new DataStorage(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
@@ -45,6 +47,9 @@ public class HistoryActivity extends AppCompatActivity
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 switch(position){
                     case 0:
+                        dataStorage.setFirstTime(true);
+                        Intent addIntent = new Intent(HistoryActivity.this, AddActivity.class);
+                        startActivity(addIntent);
                         break;
                     case 1:
                         Intent showListIntent = new Intent(HistoryActivity.this, ShowListActivity.class);

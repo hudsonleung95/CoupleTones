@@ -36,6 +36,10 @@ public class AddActivity extends AppCompatActivity
             startActivity(new Intent(AddActivity.this, WelcomeActivity.class));
             dataStorage.setFirstTime(false);
         }
+        else
+        {
+            startActivity(new Intent(AddActivity.this, HistoryActivity.class));
+        }
 
 //        // Create an auto-managed GoogleApiClient with acccess to App Invites.
 //        mGoogleApiClient = new GoogleApiClient.Builder(this)
