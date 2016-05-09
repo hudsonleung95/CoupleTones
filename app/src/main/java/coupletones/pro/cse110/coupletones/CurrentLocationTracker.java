@@ -93,6 +93,10 @@ public class CurrentLocationTracker extends Service implements LocationListener{
         return Service.START_STICKY;
     }
 
+    /**
+     * Get the current location of the user
+     * @return Location object
+     */
     public Location getLocation() {
         try {
             locMan = (LocationManager) this.getSystemService(LOCATION_SERVICE);
@@ -151,11 +155,16 @@ public class CurrentLocationTracker extends Service implements LocationListener{
         return currLoc;
     }
 
+
     @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
 
+    /**
+     * Keep track of the changing location
+     * @param location
+     */
     @Override
     public void onLocationChanged(Location location) {
         currLoc = location;
@@ -166,6 +175,9 @@ public class CurrentLocationTracker extends Service implements LocationListener{
         }
     }
 
+    /**
+     * check if the user's current location is within the favorite location
+     */
     private boolean isWithinFavLoc(Location favLoc) {
         if(favLoc != null) {
             return currLoc.distanceTo(favLoc) < LOC_RADIUS;
@@ -173,6 +185,9 @@ public class CurrentLocationTracker extends Service implements LocationListener{
         return false;
     }
 
+    /*
+     * Get the location within the radius area
+     */
     private String getLocWithinRadius() {
         getFavoriteLocations();
         for (int i = 0; i < latLngs.size(); ++i) {
@@ -193,6 +208,9 @@ public class CurrentLocationTracker extends Service implements LocationListener{
         return locToSendNotification != null;
     }
 
+    /**
+     * When the user enter the partner's favorite location, the app will send notifications
+     */
     public void sendNotification() {
         if (isAtLoc() && (!locLastVisited.equals(locToSendNotification) ||
                 pastTimeLimit(locToSendNotification))){
@@ -211,6 +229,9 @@ public class CurrentLocationTracker extends Service implements LocationListener{
         }
     }
 
+    /**
+     * Get the favorite location of users
+     */
     private void getFavoriteLocations() {
         String favLatLngFromJson = dataStorage.getLatLngList();
         String favNamesFromJson = dataStorage.getLocNameList();
@@ -236,6 +257,10 @@ public class CurrentLocationTracker extends Service implements LocationListener{
                     TIME_BTWN_SAME_LOC;
     }
 
+    /**
+     * getter to get the latitude
+     * @return double
+     */
     public double getLatitude() {
         if (currLoc != null) {
             latitude = currLoc.getLatitude();

@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 /**
+ * The class provides a dialog when users edit their favorite locations.
  */
 public class EditLocationDialog extends DialogFragment {
     public interface LocationDialogListener {

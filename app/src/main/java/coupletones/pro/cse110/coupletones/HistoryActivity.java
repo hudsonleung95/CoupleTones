@@ -13,6 +13,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+/**
+ * The class that shows the history locations of the user visited.
+ * Also the class provides the sidebar options for users
+ */
 public class HistoryActivity extends AppCompatActivity
 {
     private DataStorage dataStorage;
@@ -23,6 +27,10 @@ public class HistoryActivity extends AppCompatActivity
     private ActionBarDrawerToggle settingsToggle;
     private String activityTitle;
 
+    /**
+     * When the activity started, shows the user's partner visited favorite locations.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -38,9 +46,12 @@ public class HistoryActivity extends AppCompatActivity
         settingsDrawer = (DrawerLayout) findViewById(R.id.drawer_settings_layout);
         settingsList = (ListView) findViewById(R.id.settings_list);
 
+        // creates the sidebar and shows the options
         String[] settingsArr = { "Partner Settings", "Location List Settings", "Help" };
         settingsAdapter = new ArrayAdapter<String>(this, R.layout.layout_list_item, settingsArr);
         settingsList.setAdapter(settingsAdapter);
+
+        //switch through the sidebar options
         settingsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -80,6 +91,8 @@ public class HistoryActivity extends AppCompatActivity
         settingsToggle.setDrawerIndicatorEnabled(true);
         settingsDrawer.addDrawerListener(settingsToggle);
 
+        //Keep the current location running through the background to make sure to receive the
+        //notifications
         startService(new Intent(HistoryActivity.this, CurrentLocationTracker.class));
 
     }

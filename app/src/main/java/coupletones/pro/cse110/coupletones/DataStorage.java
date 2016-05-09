@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 /**
  * this is the centralized data storage with SharedPreferences
+ * Contains all the getters and setters to access and change the data
  */
 public class DataStorage
 {
@@ -14,6 +15,10 @@ public class DataStorage
     SharedPreferences setting;
     SharedPreferences.Editor editor;
 
+    /**
+     * create sharedPreferences to store the data
+     * @param context
+     */
     public DataStorage(Context context){
         this.context = context;
         partner = context.getSharedPreferences(context.getText(R.string.sp_key_parse_ids).toString(),
