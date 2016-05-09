@@ -22,6 +22,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * The class build the current location tracker that tracks the current location of
+ * users through the Google map
+ */
 public class CurrentLocationTracker extends Service implements LocationListener{
 
     private DataStorage dataStorage;
@@ -106,7 +110,6 @@ public class CurrentLocationTracker extends Service implements LocationListener{
                 // First get location from Network Provider
                 if (isNetworkOn) {
                     if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        // TODO: Consider calling
                         //    ActivityCompat#requestPermissions
                         // here to request the missing permissions, and then overriding
                         //   public void onRequestPermissionsResult(int requestCode, String[] permissions,

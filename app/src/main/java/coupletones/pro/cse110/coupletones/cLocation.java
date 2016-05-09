@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Created by HUDSON on 5/4/2016.
+ * The class that provides(holds) the data of the favorite location that user added.
  */
 public class cLocation
 {
@@ -19,21 +19,38 @@ public class cLocation
     LatLng latLng;
     String name;
 
+    /**
+     * constructor
+     * @param latLng
+     * @param context
+     */
     public cLocation(LatLng latLng, Context context){
         this.latLng = latLng;
         this.context = context;
         this.name = getDefaultName();
     }
 
+    /**
+     * constructor
+     * @param place
+     */
     public cLocation(Place place){
         this.latLng = place.getLatLng();
         this.name = place.getName().toString();
     }
 
+    /**
+     * Getters to get the location's latitude and longitude
+     * @return LatLng
+     */
     public LatLng getLatLng(){
         return latLng;
     }
 
+    /**
+     * Getter to get the name of the favorite location that user adds
+     * @return String
+     */
     public String getName(){
         return name;
     }

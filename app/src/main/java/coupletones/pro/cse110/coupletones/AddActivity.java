@@ -8,6 +8,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+/**
+ * The AddActivity allows user to add a partner's RegID to pair.
+ */
 public class AddActivity extends AppCompatActivity
 {
     private static final String TAG = AddActivity.class.getSimpleName();
@@ -35,6 +38,10 @@ public class AddActivity extends AppCompatActivity
 
     }
 
+    /**
+     * this method will be called when first open the app.
+     * Initialize the data
+     */
     private void init(){
         et_self_id = (EditText)findViewById(R.id.add_et_selfid);
         et_input_id = (EditText)findViewById(R.id.add_et_input);
