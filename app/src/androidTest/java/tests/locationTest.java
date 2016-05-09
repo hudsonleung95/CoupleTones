@@ -115,7 +115,7 @@ public class locationTest extends ActivityInstrumentationTestCase2<MapsActivity>
         Log.d(TAG, "ENDING test_changeNameFav!!!!!!!!!!!!!!!!!");
     }
 
-    /*
+
     public void test_removeFavorite() {
         TAG = "test_removeFavorite";
         final LatLng belmontParkLatLng = new LatLng(32.770668, -117.251554);
@@ -128,16 +128,19 @@ public class locationTest extends ActivityInstrumentationTestCase2<MapsActivity>
                         title(belmontParkLoc.getName()));
                 favsList.add(newFav);
                 mapsActivity.addMarkerToPref(newFav);
+                mapsActivity.removeMarkerFromMap(newFav);
             }
         });
+
+        assertFalse("Belmont Park location is deleted", checkName(belmontParkLoc));
+        assertFalse("Belmont Park locatoin is deleted", checkPosition(belmontParkLoc));
     }
-    */
+
 
     private boolean checkPosition(cLocation location) {
         TAG = "checkPosition";
         DataStorage dataStorage = mapsActivity.getDS();
         String favLatLngFromJson = dataStorage.getLatLngList();
-
         if (favLatLngFromJson == null) {
             throw new NullPointerException("favLatLngFromJson is NULL");
         }
@@ -160,7 +163,6 @@ public class locationTest extends ActivityInstrumentationTestCase2<MapsActivity>
         TAG = "checkName";
         DataStorage dataStorage = mapsActivity.getDS();
         String favNamesFromJson = dataStorage.getLocNameList();
-
         if (favNamesFromJson == null) {
             throw new NullPointerException("favNamesFromJson is NULL");
         }
@@ -174,67 +176,15 @@ public class locationTest extends ActivityInstrumentationTestCase2<MapsActivity>
             if (i.equals(location.getName())) {
                 return true;
             }
-
         }
 
         return false;
     }
-
-    /*
-    private boolean locationIsSaved(cLocation loc) {
-        TAG = "locationIsSaved";
-        DataStorage dataStorage = mapsActivity.getDS();
-        String favLatLngFromJson = dataStorage.getLatLngList();
-        String favNamesFromJson = dataStorage.getLocNameList();
-
-        if (favLatLngFromJson == null) {
-            throw new NullPointerException("favLatLngFromJson is NULL");
-        }
-        if (favNamesFromJson == null) {
-            throw new NullPointerException("favNamesFromJson is NULL");
-        }
-
-        LatLng[] favLatLng = new Gson().fromJson(favLatLngFromJson, LatLng[].class);
-        List<LatLng> latLngs = Arrays.asList(favLatLng);
-        latLngs = new ArrayList<>(latLngs);
-        String[] favNames = new Gson().fromJson(favNamesFromJson, String[].class);
-        List<String> locNames = Arrays.asList(favNames);
-        locNames = new ArrayList<>(locNames);
-
-        boolean foundPos = false;
-        boolean foundName = false;
-
-        for (LatLng i : latLngs) {
-            Log.d(TAG, "COORDINATES: " + i.toString());
-            if (i.equals(loc.getLatLng())) {
-                foundPos = true;
-                break;
-            }
-        }
-
-        for (String i : locNames) {
-            Log.d(TAG, "NAME: " + i);
-            if (i.equals(loc.getName())) {
-                foundName = true;
-                break;
-            }
-
-        }
-
-        return (foundPos && foundName);
-    }
-
-    */
 
     @Override
     public void tearDown() throws Exception {
         TAG = "tearDown";
         Log.d(TAG, "STARTING TEAR-DOWN");
         super.tearDown();
-        /*Log.d("locationTest", Integer.toString(favsList.size()));
-        for (Marker i : favsList) {
-            Log.d(TAG, i.getTitle());
-            mapsActivity.removeMarkerFromMap(i);
-        }*/
     }
 }
