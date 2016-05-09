@@ -81,7 +81,7 @@ public class HistoryActivity extends AppCompatActivity
         settingsToggle.setDrawerIndicatorEnabled(true);
         settingsDrawer.addDrawerListener(settingsToggle);
 
-//        startService(new Intent(HistoryActivity.this, CurrentLocationTracker.class));
+        startService(new Intent(HistoryActivity.this, CurrentLocationTracker.class));
 
     }
 
