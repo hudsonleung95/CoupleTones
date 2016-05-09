@@ -24,22 +24,9 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/add_ur_email"
         android:id="@+id/add_tv_ur"
-        android:textSize="15dp"
         android:layout_alignParentBottom="true"
-        android:layout_toLeftOf="@+id/add_tv_id"
-        android:layout_toStartOf="@+id/add_tv_id"
         android:layout_marginRight="5dp"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/add_tv_id"
-        android:text="@string/add_init_email"
-        android:textSize="15dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"/>
 
     <EditText
         android:layout_width="wrap_content"

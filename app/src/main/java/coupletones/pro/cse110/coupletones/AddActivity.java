@@ -44,12 +44,10 @@ public class AddActivity extends AppCompatActivity
     }
 
     private void init(){
-        tv_ur_email = (TextView)findViewById(R.id.add_tv_id);
         et_self_id = (EditText)findViewById(R.id.add_et_selfid);
         et_input_id = (EditText)findViewById(R.id.add_et_input);
         dataStorage = new DataStorage(this);
         parseClient = new ParseClient(this);
-        setEmail();
         et_self_id.setText(dataStorage.getSelfId());
         Log.d("PARSE ID : ", dataStorage.getSelfId());
     }
@@ -65,45 +63,6 @@ public class AddActivity extends AppCompatActivity
      */
     public void addPartner(View v){
         String inputId = et_input_id.getText().toString();
-        if(inputId.length() == 0){
-            Toast.makeText(this,
-                    getText(R.string.add_warn_empty_input).toString(),
-                    Toast.LENGTH_SHORT).show();
-
-            return;
-        }
-
         parseClient.checkId(inputId);
-    }
-
-    /**
-     * this method set the email TextView to user's first gmail
-     *
-     * if user has no account, show no email string in the view
-     */
-    private void setEmail(){
-        String email = getEmail();
-        TextView user_email = (TextView) findViewById(R.id.add_tv_id);
-
-        if(email == null)
-            user_email.setText(getText(R.string.add_no_email));
-        else
-            user_email.setText(email);
-    }
-
-    /**
-     * this method get the user's FIRST gmail account on device
-     *
-     * @return
-     *      null - if user has no account on their device
-     *      otherwise - first gmail account on device
-     */
-    private String getEmail(){
-        String email = null;
-        Account[] accounts = AccountManager.get(this).getAccountsByType("com.google");
-        if(accounts.length > 0)
-            email = accounts[0].name;
-
-        return email;
     }
 }
