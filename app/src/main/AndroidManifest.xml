@@ -71,6 +71,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
 
         <service android:name="com.parse.PushService" />
+        <service android:name=".CurrentLocationTracker"/>
 
         <receiver android:name="com.parse.ParseBroadcastReceiver" >
             <intent-filter>
@@ -108,11 +109,11 @@
             android:label="@string/title_activity_show_list"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
-        <activity
-            android:name=".EditLocationActivity"
-            android:label="@string/title_activity_edit_location"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
+        <!--<activity-->
+            <!--android:name=".EditLocationActivity"-->
+            <!--android:label="@string/title_activity_edit_location"-->
+            <!--android:theme="@style/AppTheme.NoActionBar" >-->
+        <!--</activity>-->
     </application>
 
 </manifest>
