@@ -3,7 +3,6 @@ package coupletones.pro.cse110.coupletones;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -11,8 +10,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.common.api.GoogleApiClient;
 
 
 public class AddActivity extends AppCompatActivity
@@ -23,7 +20,6 @@ public class AddActivity extends AppCompatActivity
     private EditText et_input_id;
     private DataStorage dataStorage;
     private ParseClient parseClient;
-    private static final String USER_SETTINGS = "USER_SETTINGS";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -50,6 +46,9 @@ public class AddActivity extends AppCompatActivity
         parseClient = new ParseClient(this);
         et_self_id.setText(dataStorage.getSelfId());
         Log.d("PARSE ID : ", dataStorage.getSelfId());
+
+        if(dataStorage.getPartnerId() != null)
+            et_input_id.setText(dataStorage.getPartnerId());
     }
 
     /**

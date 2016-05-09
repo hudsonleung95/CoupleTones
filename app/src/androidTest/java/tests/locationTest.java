@@ -63,7 +63,8 @@ public class locationTest extends ActivityInstrumentationTestCase2<MapsActivity>
 
         });
 
-        assertTrue("Geisel location is favorited", locationIsSaved(geiselLoc));
+        assertTrue("Geisel location is favorited", checkName(geiselLoc));
+        assertTrue("Geisel location is favorited", checkPosition(geiselLoc));
         Log.d(TAG, "ENDING test_addDefaultNameFav!!!!!!!!!!!!!!!!!");
     }
 
@@ -84,15 +85,18 @@ public class locationTest extends ActivityInstrumentationTestCase2<MapsActivity>
             }
         });
         utcLoc.setName(customName);
-        assertTrue(locationIsSaved(utcLoc));
+        assertTrue("My Favorite Mall! is favorited", checkName(utcLoc));
+        assertTrue("My Favorite Mall! is favorited", checkPosition(utcLoc));
         Log.d(TAG, "ENDING test_addCustomNameFav!!!!!!!!!!!!!!!!!");
     }
 
-    /*
+
     public void test_changeNameFav() {
         TAG = "test_changeNameFav";
+        Log.d(TAG, "STARTING test_changeNameFav!!!!!!!!!!!!!!!!!");
         final LatLng shoresLatLng = new LatLng(32.858167, -117.256469);
         final cLocation shoresLoc = new cLocation(shoresLatLng, mapsActivity);
+        final String newName = "My favorite beach!!!!!!";
         Handler handler = new Handler(Looper.getMainLooper());
         handler.post(new Runnable() {
             @Override
@@ -101,24 +105,82 @@ public class locationTest extends ActivityInstrumentationTestCase2<MapsActivity>
                         title(shoresLoc.getName()));
                 favsList.add(newFav);
                 mapsActivity.addMarkerToPref(newFav);
+                mapsActivity.changeMarkerName(newFav, newName);
             }
         });
-        assertTrue("La Jollas Shores location is favorited", locationIsSaved(shoresLoc));
-        String newName = "My favorite beach!!!!!";
+
         shoresLoc.setName(newName);
-        Marker markerToChange = null;
+        assertTrue("La Jollas Shores location is renamed", checkName(shoresLoc));
+        assertTrue("La Jollas Shores location is renamed", checkPosition(shoresLoc));
+        Log.d(TAG, "ENDING test_changeNameFav!!!!!!!!!!!!!!!!!");
+    }
 
-        //GET MARKER SOMEHOW
-
-        if (markerToChange == null) {
-            throw new NullPointerException("markerToChange is NULL");
-        }
-
-        mapsActivity.changeMarkerName(markerToChange, newName);
-        assertTrue("La Jollas Shores location is renamed", locationIsSaved(shoresLoc));
+    /*
+    public void test_removeFavorite() {
+        TAG = "test_removeFavorite";
+        final LatLng belmontParkLatLng = new LatLng(32.770668, -117.251554);
+        final cLocation belmontParkLoc = new cLocation(belmontParkLatLng, mapsActivity);
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                final Marker newFav = gMap.addMarker(new MarkerOptions().position(belmontParkLatLng).
+                        title(belmontParkLoc.getName()));
+                favsList.add(newFav);
+                mapsActivity.addMarkerToPref(newFav);
+            }
+        });
     }
     */
 
+    private boolean checkPosition(cLocation location) {
+        TAG = "checkPosition";
+        DataStorage dataStorage = mapsActivity.getDS();
+        String favLatLngFromJson = dataStorage.getLatLngList();
+
+        if (favLatLngFromJson == null) {
+            throw new NullPointerException("favLatLngFromJson is NULL");
+        }
+
+        LatLng[] favLatLng = new Gson().fromJson(favLatLngFromJson, LatLng[].class);
+        List<LatLng> latLngs = Arrays.asList(favLatLng);
+        latLngs = new ArrayList<>(latLngs);
+
+        for (LatLng i : latLngs) {
+            Log.d(TAG, "COORDINATES: " + i.toString());
+            if (i.equals(location.getLatLng())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean checkName(cLocation location) {
+        TAG = "checkName";
+        DataStorage dataStorage = mapsActivity.getDS();
+        String favNamesFromJson = dataStorage.getLocNameList();
+
+        if (favNamesFromJson == null) {
+            throw new NullPointerException("favNamesFromJson is NULL");
+        }
+
+        String[] favNames = new Gson().fromJson(favNamesFromJson, String[].class);
+        List<String> locNames = Arrays.asList(favNames);
+        locNames = new ArrayList<>(locNames);
+
+        for (String i : locNames) {
+            Log.d(TAG, "NAME: " + i);
+            if (i.equals(location.getName())) {
+                return true;
+            }
+
+        }
+
+        return false;
+    }
+
+    /*
     private boolean locationIsSaved(cLocation loc) {
         TAG = "locationIsSaved";
         DataStorage dataStorage = mapsActivity.getDS();
@@ -161,6 +223,8 @@ public class locationTest extends ActivityInstrumentationTestCase2<MapsActivity>
 
         return (foundPos && foundName);
     }
+
+    */
 
     @Override
     public void tearDown() throws Exception {
