@@ -48,7 +48,7 @@ public class CurrentLocationTracker extends Service implements LocationListener{
     private static final long DIST_BTWN_UPDATES = 10; // 10 meters
 
     // The minimum time between updates in milliseconds
-    private static final long TIME_BTWN_UPDATES = 60000; // 1 minute
+    private static final long TIME_BTWN_UPDATES = 60; // 1 minute
 
     private static final int LOC_RADIUS = 161; // 161 meters (0.1 miles)
 
@@ -61,6 +61,10 @@ public class CurrentLocationTracker extends Service implements LocationListener{
     public void onCreate() {
         super.onCreate();
         getLocation();
+        Location temp = new Location("");
+        temp.setLatitude(0);
+        temp.setLongitude(0);
+        currLoc = temp;
         locLastVisited = "";
         locToSendNotification = "";
         dataStorage = new DataStorage(this);
