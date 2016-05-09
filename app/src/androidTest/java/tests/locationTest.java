@@ -1,10 +1,8 @@
 package tests;
 
-
 import android.os.Handler;
 import android.os.Looper;
 import android.test.ActivityInstrumentationTestCase2;
-import android.test.UiThreadTest;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -29,7 +27,6 @@ public class locationTest extends ActivityInstrumentationTestCase2<MapsActivity>
 
     MapsActivity mapsActivity;
     GoogleMap gMap;
-    List<Marker> favsList;
     String TAG;
 
     public locationTest() {
@@ -42,7 +39,6 @@ public class locationTest extends ActivityInstrumentationTestCase2<MapsActivity>
         super.setUp();
         mapsActivity = getActivity();
         gMap = mapsActivity.getMap();
-        favsList = new ArrayList<>();
     }
 
 
@@ -57,7 +53,6 @@ public class locationTest extends ActivityInstrumentationTestCase2<MapsActivity>
             public void run() {
                 final Marker newFav = gMap.addMarker(new MarkerOptions().position(geiselLatLng).
                         title(geiselLoc.getName()));
-                favsList.add(newFav);
                 mapsActivity.addMarkerToPref(newFav);
             }
 
@@ -80,7 +75,6 @@ public class locationTest extends ActivityInstrumentationTestCase2<MapsActivity>
             public void run() {
                 final Marker newFav = gMap.addMarker(new MarkerOptions().position(utcLatLng).
                         title(customName));
-                favsList.add(newFav);
                 mapsActivity.addMarkerToPref(newFav);
             }
         });
@@ -103,7 +97,6 @@ public class locationTest extends ActivityInstrumentationTestCase2<MapsActivity>
             public void run() {
                 final Marker newFav = gMap.addMarker(new MarkerOptions().position(shoresLatLng).
                         title(shoresLoc.getName()));
-                favsList.add(newFav);
                 mapsActivity.addMarkerToPref(newFav);
                 mapsActivity.changeMarkerName(newFav, newName);
             }
@@ -126,7 +119,6 @@ public class locationTest extends ActivityInstrumentationTestCase2<MapsActivity>
             public void run() {
                 final Marker newFav = gMap.addMarker(new MarkerOptions().position(belmontParkLatLng).
                         title(belmontParkLoc.getName()));
-                favsList.add(newFav);
                 mapsActivity.addMarkerToPref(newFav);
                 mapsActivity.removeMarkerFromMap(newFav);
             }

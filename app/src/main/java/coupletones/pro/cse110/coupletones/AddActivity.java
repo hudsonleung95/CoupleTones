@@ -67,4 +67,8 @@ public class AddActivity extends AppCompatActivity
         String inputId = et_input_id.getText().toString();
         parseClient.checkId(inputId);
     }
+
+    public DataStorage getDS() {
+        return this.dataStorage;
+    }
 }
