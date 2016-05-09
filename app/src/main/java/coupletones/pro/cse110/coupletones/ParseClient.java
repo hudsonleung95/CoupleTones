@@ -66,13 +66,16 @@ public class ParseClient
 
                 //if exist
                 if (commentList != null){
-                    data.setPartnerId(id); //save partner id
+                    if (commentList.size() != 0){
+//                        Log.d("PARSE GOTTTT :", commentList.size() +"");
+                        data.setPartnerId(id); //save partner id
 //                    sendNotification("TEST NOTI");
-                    context.startActivity(new Intent(context, HistoryActivity.class));
-                }else
-                    Toast.makeText(context,
-                            context.getText(R.string.add_warn_id_notfound).toString(),
-                            Toast.LENGTH_SHORT).show();
+                        context.startActivity(new Intent(context, HistoryActivity.class));
+                    }else
+                        Toast.makeText(context,
+                                context.getText(R.string.add_warn_id_notfound).toString(),
+                                Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

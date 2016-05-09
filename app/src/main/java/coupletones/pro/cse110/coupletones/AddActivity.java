@@ -3,7 +3,6 @@ package coupletones.pro.cse110.coupletones;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -11,8 +10,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.common.api.GoogleApiClient;
 
 
 public class AddActivity extends AppCompatActivity
@@ -23,7 +20,6 @@ public class AddActivity extends AppCompatActivity
     private EditText et_input_id;
     private DataStorage dataStorage;
     private ParseClient parseClient;
-    private static final String USER_SETTINGS = "USER_SETTINGS";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -52,6 +48,9 @@ public class AddActivity extends AppCompatActivity
         setEmail();
         et_self_id.setText(dataStorage.getSelfId());
         Log.d("PARSE ID : ", dataStorage.getSelfId());
+
+        if(dataStorage.getPartnerId() != null)
+            et_input_id.setText(dataStorage.getPartnerId());
     }
 
     /**
@@ -72,7 +71,6 @@ public class AddActivity extends AppCompatActivity
 
             return;
         }
-
         parseClient.checkId(inputId);
     }
 
@@ -83,12 +81,11 @@ public class AddActivity extends AppCompatActivity
      */
     private void setEmail(){
         String email = getEmail();
-        TextView user_email = (TextView) findViewById(R.id.add_tv_id);
 
         if(email == null)
-            user_email.setText(getText(R.string.add_no_email));
+            tv_ur_email.setText(getText(R.string.add_no_email));
         else
-            user_email.setText(email);
+            tv_ur_email.setText(email);
     }
 
     /**
@@ -100,7 +97,8 @@ public class AddActivity extends AppCompatActivity
      */
     private String getEmail(){
         String email = null;
-        Account[] accounts = AccountManager.get(this).getAccountsByType("com.google");
+        Account[] accounts = AccountManager.get(this)
+                .getAccountsByType(getText(R.string.add_key_google).toString());
         if(accounts.length > 0)
             email = accounts[0].name;
 
