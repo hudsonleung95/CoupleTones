@@ -124,11 +124,11 @@ public class MapsActivity extends FragmentActivity
             location.setName(loc_name);
         }
 
-        //put a marker if a user add to favorite
+        //put a marker if a user adds to favorite
         Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(
                 location.getLatLng().latitude,
                 location.getLatLng().longitude))
-                .title(location.getName()).draggable(true));
+                .title(location.getName()));
 
         marker.showInfoWindow();
         addMarkerToPref(marker);
@@ -142,7 +142,7 @@ public class MapsActivity extends FragmentActivity
         dataStorage.setLocNameList(namesList);
     }
 
-    private void addMarkerToPref(Marker marker){
+    public void addMarkerToPref(Marker marker){
         latLngs.add(marker.getPosition());
         locationNames.add(marker.getTitle());
         saveMarkerPrefs();
@@ -154,12 +154,12 @@ public class MapsActivity extends FragmentActivity
         saveMarkerPrefs();
     }
 
-    private void removeMarkerFromMap(Marker marker){
+    public void removeMarkerFromMap(Marker marker){
         marker.remove();
         removeMarkerFromPref(marker);
     }
 
-    private void changeMarkerName(Marker marker, String newName){
+    public void changeMarkerName(Marker marker, String newName){
         int indexOf = locationNames.indexOf(marker.getTitle());
         locationNames.set(indexOf, newName);
         marker.setTitle(newName);
@@ -183,7 +183,7 @@ public class MapsActivity extends FragmentActivity
                 LatLng point = latLngs.get(i);
                 String name = locationNames.get(i);
                 mMap.addMarker(new MarkerOptions().position(new LatLng(point.latitude, point.longitude))
-                        .draggable(true).title(name));
+                        .title(name));
             }
         }
     }
@@ -421,5 +421,11 @@ public class MapsActivity extends FragmentActivity
         return true;
     }
 
+    public GoogleMap getMap() {
+        return this.mMap;
+    }
 
+    public DataStorage getDS() {
+        return this.dataStorage;
+    }
 }

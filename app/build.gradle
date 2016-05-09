@@ -30,6 +30,10 @@ dependencies {
     compile 'com.android.support:design:23.1.1'
     compile 'com.parse.bolts:bolts-android:1.+'
     compile 'com.parse:parse-android:1.+'
+
+    //add espresso for testing
+    //androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2';
+    //androidTestCompile 'junit:junit:4.12'
 }
 
 
