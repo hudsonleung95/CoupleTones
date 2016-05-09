@@ -10,6 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
+/**
+ * The AddLocationDialog class extends the Dialog Fragment,which would show a dialog
+ * when user add a favorite location. The dialog would prompt user to name the favorite location
+ */
 public class AddLocationDialog extends DialogFragment {
     public interface LocationDialogListener {
         void onDialogPositiveClick(DialogFragment dialog);
@@ -32,6 +36,12 @@ public class AddLocationDialog extends DialogFragment {
         }
     }
 
+    /**
+     *
+     * Create a dialog
+     * @param savedInstanceState
+     * @return Dialog
+     */
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());

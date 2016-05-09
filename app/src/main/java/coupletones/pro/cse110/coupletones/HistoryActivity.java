@@ -1,6 +1,5 @@
 package coupletones.pro.cse110.coupletones;
 
-import android.app.ListActivity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.support.v4.widget.DrawerLayout;
