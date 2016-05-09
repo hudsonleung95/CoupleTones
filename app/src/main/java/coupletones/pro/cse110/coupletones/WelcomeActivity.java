@@ -25,6 +25,11 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+/**
+ * The WelcomeActivity displays the tutorial to the user at the first run and when the help option
+ * is selected in the settings sidebar
+ */
+
 public class WelcomeActivity extends AppCompatActivity {
 
     /**
@@ -53,6 +58,7 @@ public class WelcomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
 
+        //Set images and buttons
         nextBtn = (ImageButton) findViewById(R.id.intro_btn_next);
         skipBtn = (Button) findViewById(R.id.intro_btn_skip);
         finishBtn = (Button) findViewById(R.id.intro_btn_finish);
@@ -63,6 +69,7 @@ public class WelcomeActivity extends AppCompatActivity {
         in4 = (ImageView) findViewById(R.id.intro_indicator_4);
         in5 = (ImageView) findViewById(R.id.intro_indicator_5);
         indicators = new ImageView[] {in0, in1, in2, in3, in4, in5};
+
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -96,6 +103,7 @@ public class WelcomeActivity extends AppCompatActivity {
                 page = position;
                 updateIndicators(page);
 
+                //Update the color when each page is selected
                 switch (position) {
                     case 0:
                         mViewPager.setBackgroundColor(color1);
@@ -116,6 +124,8 @@ public class WelcomeActivity extends AppCompatActivity {
                         mViewPager.setBackgroundColor(color6);
                         break;
                 }
+
+                //update the bottom page indicators
                 nextBtn.setVisibility(position == numScreens - 1 ? View.GONE : View.VISIBLE);
                 finishBtn.setVisibility(position == numScreens - 1 ? View.VISIBLE : View.GONE);
             }
@@ -136,7 +146,6 @@ public class WelcomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View view){
                 finish();
-                //save shared preferences
             }
         });
 
@@ -149,7 +158,10 @@ public class WelcomeActivity extends AppCompatActivity {
 
     }
 
-
+    /**
+     * Update the bottom images to indicate the current page
+     * @param position - the page currently viewed
+     */
     void updateIndicators(int position) {
         for (int i = 0; i < indicators.length; i++) {
             indicators[i].setBackgroundResource(
@@ -167,14 +179,19 @@ public class WelcomeActivity extends AppCompatActivity {
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
-        int[] titles = new int[] {R.string.tutorial_0_title, R.string.tutorial_1_title, R.string.tutorial_2_title,
-                R.string.tutorial_3_title, R.string.tutorial_4_title, R.string.tutorial_5_title};
+        int[] titles = new int[] {R.string.tutorial_0_title, R.string.tutorial_1_title,
+                R.string.tutorial_2_title, R.string.tutorial_3_title, R.string.tutorial_4_title,
+                R.string.tutorial_5_title};
         int[] descriptions = new int[] {R.string.tutorial_0_desc,
-                R.string.tutorial_1_desc, R.string.tutorial_2_desc,
-                R.string.tutorial_3_desc, R.string.tutorial_4_desc, R.string.tutorial_5_desc};
-        int[] images = new int[] {R.drawable.ic_people_outline_black_24dp, R.drawable.ic_person_add_black_24dp,
-                R.drawable.ic_add_location_black_24dp, R.drawable.ic_mode_edit_black_24dp,
-                R.drawable.ic_directions_walk_black_24dp, R.drawable.ic_format_list_bulleted_black_24dp};
+                R.string.tutorial_1_desc,
+                R.string.tutorial_2_desc,
+                R.string.tutorial_3_desc,
+                R.string.tutorial_4_desc,
+                R.string.tutorial_5_desc};
+        int[] images = new int[] {R.drawable.ic_people_outline_black_24dp,
+                R.drawable.ic_person_add_black_24dp, R.drawable.ic_add_location_black_24dp,
+                R.drawable.ic_mode_edit_black_24dp, R.drawable.ic_directions_walk_black_24dp,
+                R.drawable.ic_format_list_bulleted_black_24dp};
 
         public PlaceholderFragment() {
         }
@@ -191,14 +208,27 @@ public class WelcomeActivity extends AppCompatActivity {
             return fragment;
         }
 
+        /**
+         * Set the image, title, and description appropriate when each page is loaded
+         * @param inflater
+         * @param container
+         * @param savedInstanceState
+         * @return
+         */
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_welcome, container, false);
+
+            //Set the appropriate title
             TextView titleView = (TextView) rootView.findViewById(R.id.section_title);
             titleView.setText(titles[getArguments().getInt(ARG_SECTION_NUMBER) - 1]);
+
+            //Set the appropriate description
             TextView descView = (TextView) rootView.findViewById(R.id.section_desc);
             descView.setText(descriptions[getArguments().getInt(ARG_SECTION_NUMBER) - 1]);
+
+            //Set the appropriate image
             ImageView img = (ImageView) rootView.findViewById(R.id.section_img);
             img.setBackgroundResource(images[getArguments().getInt(ARG_SECTION_NUMBER) - 1]);
             return rootView;
@@ -224,7 +254,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            // Show 4 total pages.
+            // Show 6 total pages.
             return numScreens;
         }
 

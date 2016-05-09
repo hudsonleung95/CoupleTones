@@ -44,6 +44,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * The MapsActivity is responsible for handling user interactions when the user clicks on the map
+ * button. The activity will handle adding, setting, and removing favorite locations
+ */
+
 public class MapsActivity extends FragmentActivity
         implements OnMapReadyCallback, OnConnectionFailedListener,OnMapLongClickListener,
         AddLocationDialog.LocationDialogListener, GoogleMap.OnMarkerDragListener,
@@ -68,13 +73,19 @@ public class MapsActivity extends FragmentActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_maps);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        //Obtain markers saved in shared preferences
         dataStorage = new DataStorage(this);
+
+        //Initialize list of saved markers separating by latatude/longitute and names
         latLngs = new ArrayList<LatLng>();
         locationNames = new ArrayList<String>();
+
         //initialize google api client
         // ATTENTION: This "addApi(AppIndex.API)"was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -99,6 +110,7 @@ public class MapsActivity extends FragmentActivity
     @Override
     public void onMapReady(GoogleMap googleMap)
     {
+        //Enable interactions with the google map
         mMap = googleMap;
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.setOnMapLongClickListener(this);
@@ -108,13 +120,23 @@ public class MapsActivity extends FragmentActivity
         loadMarkers();
     }
 
+    /**
+     * Allow the user to add a location by long clicking on any location on the map
+     * @param point
+     */
     @Override
     public void onMapLongClick(LatLng point){
         location = new cLocation(point, this);
+
+        //Open a dialog for the user to allow the user to set the name for the saved location
         DialogFragment dialog = new AddLocationDialog();
         dialog.show(getFragmentManager(), getText(R.string.map_ask_add).toString());
     }
 
+    /**
+     * If the user clicks on the "Add" button, the location will be saved
+     * @param dialog
+     */
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
 
@@ -131,10 +153,15 @@ public class MapsActivity extends FragmentActivity
                 .title(location.getName()));
 
         marker.showInfoWindow();
-        addMarkerToPref(marker);
 
+        //Save the marker in shared preferences
+        addMarkerToPref(marker);
     }
 
+    /**
+     * The method will save the current items in the LatLngs and LocaitonNames ArrayLists in
+     * shared preferences
+     */
     private void saveMarkerPrefs(){
         String latLngsList = new Gson().toJson(latLngs);
         String namesList = new Gson().toJson(locationNames);
@@ -142,23 +169,41 @@ public class MapsActivity extends FragmentActivity
         dataStorage.setLocNameList(namesList);
     }
 
+    /**
+     * The helper method will add a marker into the ArrayLists and save it in shared preferences
+     * @param marker
+     */
     public void addMarkerToPref(Marker marker){
         latLngs.add(marker.getPosition());
         locationNames.add(marker.getTitle());
         saveMarkerPrefs();
     }
 
+    /**
+     * The helper method will remove a marker from the ArrayLists and save the changes in shared
+     * preferences
+     * @param marker
+     */
     private void removeMarkerFromPref(Marker marker){
         latLngs.remove(marker.getPosition());
         locationNames.remove(marker.getTitle());
         saveMarkerPrefs();
     }
 
+    /**
+     * The method will remove a marker from the displayed map and save changes in shared preferences
+     * @param marker
+     */
     public void removeMarkerFromMap(Marker marker){
         marker.remove();
         removeMarkerFromPref(marker);
     }
 
+    /**
+     * The method will save the given name in shared preferences
+     * @param marker
+     * @param newName Name entered in the EditText field
+     */
     public void changeMarkerName(Marker marker, String newName){
         int indexOf = locationNames.indexOf(marker.getTitle());
         locationNames.set(indexOf, newName);
@@ -166,6 +211,9 @@ public class MapsActivity extends FragmentActivity
         saveMarkerPrefs();
     }
 
+    /**
+     * The method will load all the markers from shared preferences and display them on the map
+     */
     private void loadMarkers(){
         String favLatLngFromJson = dataStorage.getLatLngList();
         String favNamesFromJson = dataStorage.getLocNameList();
@@ -174,11 +222,13 @@ public class MapsActivity extends FragmentActivity
             String[] favNames = new Gson().fromJson(favNamesFromJson, String[].class);
             LatLng[] favLatLng = new Gson().fromJson(favLatLngFromJson, LatLng[].class);
 
+            //Convert json to the actual ArrayLists
             latLngs = Arrays.asList(favLatLng);
             latLngs = new ArrayList<LatLng>(latLngs);
             locationNames = Arrays.asList(favNames);
             locationNames = new ArrayList<String>(locationNames);
 
+            //Add the markers back onto the map
             for (int i = 0; i < latLngs.size(); i++) {
                 LatLng point = latLngs.get(i);
                 String name = locationNames.get(i);
@@ -189,8 +239,15 @@ public class MapsActivity extends FragmentActivity
     }
 
     @Override
-    public void onDialogNegativeClick(DialogFragment dialog) {}
+    public void onDialogNegativeClick(DialogFragment dialog) {
+        //Do nothing when "Cancel" is pressed
+    }
 
+    /**
+     * When the marker is dragged the latitude and longitude coordinates are saved in shared
+     * preferences
+     * @param marker
+     */
     @Override
     public void onMarkerDragEnd(Marker marker){
         int indexOf = locationNames.indexOf(marker.getTitle());
@@ -200,6 +257,7 @@ public class MapsActivity extends FragmentActivity
 
     @Override
     public void onMarkerDragStart(Marker marker){
+        //Fixed bug where marker jumps when long pressed
         int indexOf = locationNames.indexOf(marker.getTitle());
         marker.setPosition(latLngs.get(indexOf));
     }
@@ -323,7 +381,7 @@ public class MapsActivity extends FragmentActivity
                 }
             });
 
-
+            //Close the drawer when cancel is pressed
             Button cancel = (Button) findViewById(R.id.drawer_btn_cancel);
             cancel.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -333,6 +391,7 @@ public class MapsActivity extends FragmentActivity
                 }
             });
 
+            //Save changes in the name and close drawer when save is pressed
             Button save = (Button) findViewById(R.id.drawer_btn_save);
             save.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -25,6 +25,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * The ShowListActivity allows the user to see a list of the current saved locations when
+ * the "Location Settings" is pressed
+ */
+
 public class ShowListActivity extends AppCompatActivity
         implements EditLocationDialog.LocationDialogListener {
 
@@ -43,6 +48,7 @@ public class ShowListActivity extends AppCompatActivity
 
         listview = (ListView) findViewById(R.id.listView);
 
+        //Initialize variables
         dataStorage = new DataStorage(this);
         latLngs = new ArrayList<LatLng>();
         locationNames = new ArrayList<String>();
@@ -55,6 +61,7 @@ public class ShowListActivity extends AppCompatActivity
                     public void onItemClick(AdapterView<?> parent, final View view,
                                             int position, long id) {
 
+                        //Get location clicked by using the position as index in ArrayList
                         indexOf = position;
                         DialogFragment dialog = new EditLocationDialog();
                         dialog.show(getFragmentManager(), getText(R.string.edit_location).toString());
@@ -64,10 +71,15 @@ public class ShowListActivity extends AppCompatActivity
             }
     }
 
+    /**
+     * Save the edited name i shared preferences when "Save" is pressed
+     * @param dialog
+     */
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
         String loc_name = ((EditLocationDialog)dialog).getNameFromUser();
-        //if user enters nothing
+
+        //Save updated name in shared preferences
         if ( loc_name.length() != 0){
             locationNames.set(indexOf, loc_name);
             String namesList = new Gson().toJson(locationNames);
@@ -78,10 +90,15 @@ public class ShowListActivity extends AppCompatActivity
 
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
-
+        //Dont do anything when cancel is pressed
     }
 
+    /**
+     * Get the current saved locations from shared preferences and display on the list
+     */
     private void updateList(){
+
+        //Get the current saved locations from Shared Preferences
         String favLatLngFromJson = dataStorage.getLatLngList();
         String favNamesFromJson = dataStorage.getLocNameList();
 
@@ -89,6 +106,7 @@ public class ShowListActivity extends AppCompatActivity
             String[] favNames = new Gson().fromJson(favNamesFromJson, String[].class);
             LatLng[] favLatLng = new Gson().fromJson(favLatLngFromJson, LatLng[].class);
 
+            //Convert from json to the actual ArrayLists
             latLngs = Arrays.asList(favLatLng);
             latLngs = new ArrayList<LatLng>(latLngs);
             locationNames = Arrays.asList(favNames);

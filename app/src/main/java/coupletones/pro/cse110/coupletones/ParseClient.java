@@ -14,6 +14,10 @@ import com.parse.ParseQuery;
 
 import java.util.List;
 
+/**
+ * The ParseClient is used as an alternative to GoogleCloudMessaging in order to send push
+ * notifications to the partner when the user visits a favorite location
+ */
 public class ParseClient
 {
     private DataStorage data;
@@ -22,12 +26,15 @@ public class ParseClient
 
     public ParseClient(Context context){
         this.context = context;
+
+        //Get data from shared preferences
         data = new DataStorage(context);
+
         progressDialog = new ProgressDialog(context);
     }
 
     /**
-     * call this method when a user visit his/her fav
+     * Call this method when a user visit his/her fav
      *
      * @param msg
      *      msg to be sent,
@@ -45,7 +52,7 @@ public class ParseClient
     }
 
     /**
-     * this method check if the input id is a valid one
+     * This method checks if the input id is a valid one
      *
      * @param id
      */
@@ -69,6 +76,7 @@ public class ParseClient
                     data.setPartnerId(id); //save partner id
                     context.startActivity(new Intent(context, HistoryActivity.class));
                 }else
+                    //Display a toast if invalid id
                     Toast.makeText(context,
                             context.getText(R.string.add_warn_id_notfound).toString(),
                             Toast.LENGTH_SHORT).show();
