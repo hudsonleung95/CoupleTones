@@ -11,6 +11,11 @@
     <!-- KEYS for parse and sharedpreferences -->
     <string name="parse_key_installid">installationId</string>
     <string name="parse_key_table_install">_Installation</string>
+    <string name="parse_key_table_history">LocHistory</string>
+    <string name="parse_key_table_fav">FavLocation</string>
+    <string name="parse_key_latlng">loc_latlng</string>
+    <string name="parse_key_locName">loc_name</string>
+    <string name="parse_key_date">createdAt</string>
     <string name="sp_key_location">LOCATION</string>
     <string name="sp_key_parse_ids">PARSE_IDS</string>
     <string name="sp_key_setting">USER_SETTING</string>
@@ -20,6 +25,7 @@
     <string name="sp_key_item_selfid">SELF_ID</string>
     <string name="sp_key_item_first_time">FIRST_TIME</string>
     <string name="pc_checking">Checking ID...</string>
+    <string name="pc_download">Downloading History...</string>
 
     <!-- used in AddActivity -->
     <string name="add_welcome">Let\'s Get Started</string>

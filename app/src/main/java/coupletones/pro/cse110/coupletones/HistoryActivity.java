@@ -12,6 +12,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * The class that shows the history locations of the user visited.
@@ -20,12 +24,14 @@ import android.widget.ListView;
 public class HistoryActivity extends AppCompatActivity
 {
     private DataStorage dataStorage;
+    private ParseClient parseClient;
     ListView list;
     private DrawerLayout settingsDrawer;
     private ListView settingsList;
     private ArrayAdapter<String> settingsAdapter;
     private ActionBarDrawerToggle settingsToggle;
     private String activityTitle;
+    private ArrayList<HashMap<String, String>> history;
 
     /**
      * When the activity started, shows the user's partner visited favorite locations.
@@ -37,6 +43,7 @@ public class HistoryActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_history);
         dataStorage = new DataStorage(this);
+        parseClient = new ParseClient(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
@@ -91,6 +98,8 @@ public class HistoryActivity extends AppCompatActivity
         settingsToggle.setDrawerIndicatorEnabled(true);
         settingsDrawer.addDrawerListener(settingsToggle);
 
+        parseClient.pullPartnerHistory();
+
         //Keep the current location running through the background to make sure to receive the
         //notifications
         startService(new Intent(HistoryActivity.this, CurrentLocationTracker.class));
@@ -131,5 +140,27 @@ public class HistoryActivity extends AppCompatActivity
         super.onConfigurationChanged(newConfig);
         settingsToggle.onConfigurationChanged(newConfig);
     }
+
+    /**
+     * this method will update the history list
+     * call in parseClient after downloading all related history
+     *
+     * @param history
+     *      data of the history, including Name and time
+     */
+    public void updateList(ArrayList<HashMap<String, String>> history){
+        this.history = history;
+
+        if(history.size() > 1){
+            SimpleAdapter adapter = new SimpleAdapter(this, history,
+                    android.R.layout.simple_list_item_2,
+                    new String[] {getText(R.string.parse_key_locName).toString()
+                            , getText(R.string.parse_key_date).toString()},
+                    new int[] {android.R.id.text1, android.R.id.text2});
+
+            list.setAdapter(adapter);
+        }
+    }
+
 
 }

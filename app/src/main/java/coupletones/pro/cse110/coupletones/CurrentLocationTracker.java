@@ -222,6 +222,9 @@ public class CurrentLocationTracker extends Service implements LocationListener{
 
             timesLastVisited.put(locToSendNotification, System.currentTimeMillis());
 
+            //push to history
+            parseClient.pushHistory(locToSendNotification, currLoc);
+
             //Send message
             parseClient.sendNotification("Your partner visited " + locToSendNotification + " at "
                     + currTime);

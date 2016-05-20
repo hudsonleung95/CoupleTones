@@ -6,7 +6,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * The AddActivity allows user to add a partner's RegID to pair.
@@ -19,6 +23,7 @@ public class AddActivity extends AppCompatActivity
     private EditText et_input_id;
     private DataStorage dataStorage;
     private ParseClient parseClient;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -35,6 +40,7 @@ public class AddActivity extends AppCompatActivity
         {
             startActivity(new Intent(AddActivity.this, HistoryActivity.class));
         }
+
 
     }
 
@@ -66,6 +72,7 @@ public class AddActivity extends AppCompatActivity
     public void addPartner(View v){
         String inputId = et_input_id.getText().toString();
 
+//        inputId = "a468a6e2-1def-4f69-9876-fe9a535adad4"; //TEST: MAC
         //if empty input, still able to use the app
         if (inputId.length() == 0){
             dataStorage.setPartnerId("");
