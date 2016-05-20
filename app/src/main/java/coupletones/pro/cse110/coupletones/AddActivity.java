@@ -65,7 +65,13 @@ public class AddActivity extends AppCompatActivity
      */
     public void addPartner(View v){
         String inputId = et_input_id.getText().toString();
-        parseClient.checkId(inputId);
+
+        //if empty input, still able to use the app
+        if (inputId.length() == 0){
+            dataStorage.setPartnerId("");
+            startActivity(new Intent(this, HistoryActivity.class));
+        }else
+            parseClient.checkId(inputId);
     }
 
     public DataStorage getDS() {
