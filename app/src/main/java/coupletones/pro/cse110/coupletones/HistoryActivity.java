@@ -124,6 +124,8 @@ public class HistoryActivity extends AppCompatActivity
         //when press the map button, show map
         if(item.getItemId() == R.id.hist_tomap)
             startActivity(new Intent(this, MapsActivity.class));
+        else if(item.getItemId() == R.id.hist_refresh)
+            parseClient.pullPartnerHistory();
 
         return super.onOptionsItemSelected(item);
     }
