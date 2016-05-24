@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -21,6 +22,7 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -39,6 +41,8 @@ public class ShowListActivity extends AppCompatActivity
     private int indexOf;
     private String chosenTone;
     private static final int REQUEST_PICK_TONE = 1;
+    private boolean isArrivalTone;
+    private ParseClient parseClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +55,8 @@ public class ShowListActivity extends AppCompatActivity
         dataStorage = new DataStorage(this);
         latLngs = new ArrayList<LatLng>();
         locationNames = new ArrayList<String>();
+        parseClient = new ParseClient(this);
+        parseClient.pullPartnerFav();
 
         updateList();
 
@@ -89,6 +95,12 @@ public class ShowListActivity extends AppCompatActivity
     }
 
     public void chooseNotification(View view){
+        Button btn = (Button)view;
+        if(btn.getId() == R.id.set_arrival_tone)
+            isArrivalTone = true;
+        else
+            isArrivalTone = false;
+
         Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Notification Tone");
@@ -106,12 +118,14 @@ public class ShowListActivity extends AppCompatActivity
             if (uri != null)
             {
                 this.chosenTone = uri.toString();
+                Log.d("TONE: ", this.chosenTone);
             }
             else
             {
                 Uri defaultTone = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
                 this.chosenTone = defaultTone.toString();
             }
+            parseClient.pushTone(chosenTone, latLngs.get(indexOf), isArrivalTone);
         }
     }
 

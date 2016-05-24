@@ -68,6 +68,7 @@ public class MapsActivity extends FragmentActivity
     private final Context context = this;
     private DataStorage dataStorage;
     private Location currMarkerLoc;
+    private ParseClient parseClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +86,7 @@ public class MapsActivity extends FragmentActivity
         //Initialize list of saved markers separating by latatude/longitute and names
         latLngs = new ArrayList<LatLng>();
         locationNames = new ArrayList<String>();
+        parseClient = new ParseClient(this);
 
         //initialize google api client
         // ATTENTION: This "addApi(AppIndex.API)"was auto-generated to implement the App Indexing API.
@@ -174,6 +176,7 @@ public class MapsActivity extends FragmentActivity
      * @param marker
      */
     public void addMarkerToPref(Marker marker){
+        parseClient.pushFavLoc(marker);
         latLngs.add(marker.getPosition());
         locationNames.add(marker.getTitle());
         saveMarkerPrefs();

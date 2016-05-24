@@ -15,6 +15,8 @@
     <string name="parse_key_table_fav">FavLocation</string>
     <string name="parse_key_latlng">loc_latlng</string>
     <string name="parse_key_locName">loc_name</string>
+    <string name="parse_key_tone_arv">loc_tone_arv</string>
+    <string name="parse_key_tone_dpt">loc_tone_dpt</string>
     <string name="parse_key_date">createdAt</string>
     <string name="sp_key_location">LOCATION</string>
     <string name="sp_key_parse_ids">PARSE_IDS</string>
@@ -24,8 +26,13 @@
     <string name="sp_key_item_partnerid">PARTNER_ID</string>
     <string name="sp_key_item_selfid">SELF_ID</string>
     <string name="sp_key_item_first_time">FIRST_TIME</string>
+
+    <!-- parseClient -->
     <string name="pc_checking">Checking ID...</string>
     <string name="pc_download">Downloading History...</string>
+    <string name="pc_download_fav">Downloading Favorites...</string>
+    <string name="pc_warn_updateTone">Error updating tone, Please try again later.</string>
+    <string name="pc_empty_fav">Your partner has not added any favorites.</string>
 
     <!-- used in AddActivity -->
     <string name="add_welcome">Let\'s Get Started</string>

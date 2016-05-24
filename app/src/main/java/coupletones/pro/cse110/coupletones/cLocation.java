@@ -39,6 +39,11 @@ public class cLocation
         this.name = place.getName().toString();
     }
 
+    public cLocation(LatLng latLng, String name){
+        this.latLng = latLng;
+        this.name = name;
+    }
+
     /**
      * Getters to get the location's latitude and longitude
      * @return LatLng
