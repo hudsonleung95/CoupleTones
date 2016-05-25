@@ -23,10 +23,11 @@
         android:layout_marginTop="10dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginBottom="4dp" />
+        android:layout_marginBottom="4dp"
+        android:onClick="showOnMap"/>
     <Button
-        android:id="@+id/set_arrival_tone"
-        android:text="Set Arrival Tone"
+        android:id="@+id/set_audible_arrival_tone"
+        android:text="Set Arrival Audible Tone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
@@ -34,12 +35,30 @@
         android:layout_marginBottom="4dp"
         android:onClick="chooseNotification"/>
     <Button
-        android:id="@+id/set_departure_tone"
-        android:text="Set Departure Tone"
+        android:id="@+id/set_audible_departure_tone"
+        android:text="Set Departure Audible Tone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="4dp"
         android:onClick="chooseNotification" />
+    <Button
+        android:id="@+id/set_vibe_arrival_tone"
+        android:text="Set Arrival Vibe Tone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="4dp"
+        android:onClick="chooseVibeNotification"/>
+    <Button
+        android:id="@+id/set_vibe_departure_tone"
+        android:text="Set Departure Vibe Tone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="4dp"
+        android:onClick="chooseVibeNotification"/>
 </LinearLayout>
