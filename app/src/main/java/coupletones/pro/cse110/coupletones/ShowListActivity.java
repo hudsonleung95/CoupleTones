@@ -25,6 +25,7 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -58,6 +59,8 @@ public class ShowListActivity extends AppCompatActivity
     long [] vibe9 = {0, 500, 200, 250, 200, 250}; //one long vibrate, then two short vibrates
     long [] vibe10 = {0, 400, 200, 400, 250}; //two medium vibrates, one short vibrate
     long [][] vibeTones = {vibe1, vibe2, vibe3, vibe4, vibe5, vibe6, vibe7, vibe8, vibe9, vibe10};
+    private boolean isArrivalTone;
+    private ParseClient parseClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +73,8 @@ public class ShowListActivity extends AppCompatActivity
         dataStorage = new DataStorage(this);
         latLngs = new ArrayList<LatLng>();
         locationNames = new ArrayList<String>();
+        parseClient = new ParseClient(this);
+        parseClient.pullPartnerFav();
 
         updateList();
 
@@ -94,22 +99,17 @@ public class ShowListActivity extends AppCompatActivity
 
                     builder.show();
 
-
-                    //Get location clicked by using the position as index in ArrayList
+                        //Get location clicked by using the position as index in ArrayList
 //                        indexOf = position;
 //                        DialogFragment dialog = new EditLocationDialog();
 //                        dialog.show(getFragmentManager(), getText(R.string.edit_location).toString());
 
-                }
-            });
-        }
+                    }
+                });
+            }
     }
 
     public void showOnMap(View view){
-//        Intent showMapIntent = new Intent(this, PartnerMapsActivity.class);
-//        showMapIntent.putExtra("LOC_CLICKED", this.locationNames.get(indexOf));
-//        startActivity(showMapIntent);
-    }
 
     public void chooseVibeNotification(View view){
         LayoutInflater inflater = getLayoutInflater();
@@ -146,6 +146,12 @@ public class ShowListActivity extends AppCompatActivity
     }
 
     public void chooseNotification(View view){
+        Button btn = (Button)view;
+        if(btn.getId() == R.id.set_arrival_tone)
+            isArrivalTone = true;
+        else
+            isArrivalTone = false;
+
         Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Notification Tone");
@@ -163,12 +169,15 @@ public class ShowListActivity extends AppCompatActivity
             if (uri != null)
             {
                 chosenTone = uri.toString();
+                Log.d("TONE: ", this.chosenTone);
+
             }
             else
             {
                 Uri defaultTone = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
                 chosenTone = defaultTone.toString();
             }
+            parseClient.pushTone(chosenTone, latLngs.get(indexOf), isArrivalTone);
         }
     }
 

@@ -4,11 +4,13 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.util.Log;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
@@ -123,6 +125,52 @@ public class ParseClient
         parseObject.saveInBackground();
     }
 
+    public void pushFavLoc(Marker marker){
+        ParseObject parseObject
+                = new ParseObject(context.getText(R.string.parse_key_table_fav).toString());
+
+        parseObject.put(context.getText(R.string.parse_key_locName).toString(),
+                                marker.getTitle());
+        parseObject.put(context.getText(R.string.parse_key_latlng).toString(),
+                new ParseGeoPoint(marker.getPosition().latitude, marker.getPosition().longitude));
+        parseObject.put(context.getText(R.string.parse_key_installid).toString(),
+                data.getSelfId());
+        parseObject.saveInBackground();
+    }
+
+    public void pushTone(final String tone, LatLng latLng, final boolean isArrival){
+        ParseQuery query
+                = new ParseQuery(context.getText(R.string.parse_key_table_fav).toString());
+
+        query.whereEqualTo(context.getText(R.string.parse_key_installid).toString(),
+                data.getPartnerId());
+        query.whereEqualTo(context.getText(R.string.parse_key_latlng).toString(),
+                new ParseGeoPoint(latLng.latitude, latLng.longitude));
+
+        query.findInBackground(new FindCallback<ParseObject>() {
+            public void done(List<ParseObject> matches, ParseException e) {
+
+                //if have visited any of the fav
+                if (matches != null) {
+                    if (matches.size() == 1) {
+                        ParseObject result = matches.get(0);
+                        if(isArrival)
+                            result.put(context.getText(R.string.parse_key_tone_arv).toString(),
+                                    tone);
+                        else
+                            result.put(context.getText(R.string.parse_key_tone_dpt).toString(),
+                                    tone);
+                        result.saveInBackground();
+                    }else{
+                        Toast.makeText(context,
+                                context.getText(R.string.pc_warn_updateTone).toString(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
+    }
+
     /**
      * this method pull partner's log from the parse DB
      *
@@ -133,7 +181,7 @@ public class ParseClient
     public void pullPartnerHistory(){
         final ArrayList<HashMap<String, String>> history = new ArrayList<>();
 
-        progressDialog.setMessage(context.getText(R.string.pc_checking).toString());
+        progressDialog.setMessage(context.getText(R.string.pc_download).toString());
         progressDialog.show();
 
         ParseQuery<ParseObject> query =
@@ -174,6 +222,55 @@ public class ParseClient
                         //Display a toast if invalid id
                         Toast.makeText(context,
                                 context.getText(R.string.hist_empty).toString(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
+    }
+
+    public void pullPartnerFav(){
+        final ArrayList<HashMap<String, String>> favs = new ArrayList<>();
+        if(context instanceof ShowListActivity){
+            progressDialog.setMessage(context.getText(R.string.pc_download_fav).toString());
+            progressDialog.show();
+        }
+
+        ParseQuery<ParseObject> query =
+                ParseQuery.getQuery(context.getText(R.string.parse_key_table_fav).toString());
+
+        query.whereEqualTo(context.getText(R.string.parse_key_installid).toString(),
+                data.getPartnerId());
+
+        query.findInBackground(new FindCallback<ParseObject>() {
+            public void done(List<ParseObject> favList, ParseException e) {
+                //close the progress dialog when done
+                if (progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
+
+                //if have visited any of the fav
+                if (favList != null){
+                    if (favList.size() > 0){
+                        for(ParseObject temp: favList){
+                            HashMap<String, String> tempFav = new HashMap<String, String>();
+
+                            tempFav.put(context.getText(R.string.parse_key_locName).toString()
+                                    , (String)temp.get(context.getText(R.string.parse_key_locName).toString()));
+
+
+                            favs.add(tempFav);
+                        }
+                        Log.d("FAV : ", "fav added : " + favs.size());
+
+                        if (context instanceof ShowListActivity){
+
+                        }
+
+                    }else{
+                        //Display a toast if invalid id
+                        Toast.makeText(context,
+                                context.getText(R.string.pc_empty_fav).toString(),
                                 Toast.LENGTH_SHORT).show();
                     }
                 }

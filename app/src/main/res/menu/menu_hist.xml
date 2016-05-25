@@ -10,6 +10,13 @@
         android:icon="@android:drawable/ic_dialog_map"
         android:title="@string/hist_map"
         app:showAsAction="always"
+        android:orderInCategory="200"/>
+
+    <item
+        android:id="@+id/hist_refresh"
+        android:icon="@android:drawable/ic_popup_sync"
+        android:title="@string/str_refresh"
+        app:showAsAction="always"
         android:orderInCategory="100"/>
 
 </menu>
