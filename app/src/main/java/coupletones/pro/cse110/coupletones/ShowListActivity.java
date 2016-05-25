@@ -111,6 +111,8 @@ public class ShowListActivity extends AppCompatActivity
 
     public void showOnMap(View view){
 
+    }
+
     public void chooseVibeNotification(View view){
         LayoutInflater inflater = getLayoutInflater();
         final View vibeToneLayout = inflater.inflate(R.layout.vibrate_notifications_list,
@@ -147,8 +149,9 @@ public class ShowListActivity extends AppCompatActivity
 
     public void chooseNotification(View view){
         Button btn = (Button)view;
-        if(btn.getId() == R.id.set_arrival_tone)
+        if(btn.getId() == R.id.set_audible_arrival_tone) {
             isArrivalTone = true;
+        }
         else
             isArrivalTone = false;
 
