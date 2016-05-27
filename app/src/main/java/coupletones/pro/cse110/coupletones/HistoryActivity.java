@@ -64,8 +64,8 @@ public class HistoryActivity extends AppCompatActivity
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 switch(position){
                     case 0:
-                        dataStorage.setFirstTime(true);
                         Intent addIntent = new Intent(HistoryActivity.this, AddActivity.class);
+                        addIntent.putExtra("CHANGE_PARTNER", true);
                         startActivity(addIntent);
                         break;
                     case 1:

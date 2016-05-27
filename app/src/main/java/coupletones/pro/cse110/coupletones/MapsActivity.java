@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -18,6 +19,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.appindexing.Action;
@@ -35,10 +37,13 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,11 +74,27 @@ public class MapsActivity extends FragmentActivity
     private DataStorage dataStorage;
     private Location currMarkerLoc;
     private ParseClient parseClient;
+    private boolean partnerLocs;
+    private String locClicked;
+    private Marker markerClicked;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.layout_maps);
+
+        Bundle extras = getIntent().getExtras();
+        partnerLocs = false;
+        locClicked = "";
+        if(extras != null){
+            setContentView(R.layout.layout_partner_maps);
+            partnerLocs = extras.getBoolean("SHOW_PARTNER_LOCS");
+            locClicked = extras.getString("LOC_CLICKED");
+            TextView title = (TextView) findViewById(R.id.maps_title);
+            title.setText("Your Partner's Favorite Locations");
+        }
+        else {
+            setContentView(R.layout.layout_maps);
+        }
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -115,11 +136,22 @@ public class MapsActivity extends FragmentActivity
         //Enable interactions with the google map
         mMap = googleMap;
         mMap.getUiSettings().setZoomControlsEnabled(true);
-        mMap.setOnMapLongClickListener(this);
+
+        if(!partnerLocs) {
+            mMap.setOnMapLongClickListener(this);
+            mMap.setOnMarkerDragListener(this);
+            init(); //initialize components
+        }
         mMap.setOnMarkerClickListener(this);
-        mMap.setOnMarkerDragListener(this);
-        init(); //initialize components
-        loadMarkers();
+
+        if(!partnerLocs) {
+            loadMarkers();
+        }
+        else{
+            loadMarkers();         //change to loadPartnerMarkers() later
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(markerClicked.getPosition(), ZOOMLV));
+            markerClicked.showInfoWindow();
+        }
     }
 
     /**
@@ -235,8 +267,15 @@ public class MapsActivity extends FragmentActivity
             for (int i = 0; i < latLngs.size(); i++) {
                 LatLng point = latLngs.get(i);
                 String name = locationNames.get(i);
-                mMap.addMarker(new MarkerOptions().position(new LatLng(point.latitude, point.longitude))
-                        .title(name));
+                Marker addedMarker = mMap.addMarker(new MarkerOptions().position(new LatLng
+                        (point.latitude, point.longitude)).title(name));
+                if(partnerLocs){
+                    addedMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                }
+
+                if(name.equals(locClicked)){
+                    markerClicked = addedMarker;
+                }
             }
         }
     }
@@ -367,7 +406,8 @@ public class MapsActivity extends FragmentActivity
                             .setPositiveButton("Remove",new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog,int id) {
                                     removeMarkerFromMap(markerCopy);
-                                    Toast.makeText(getApplicationContext(), "Location Removed", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getApplicationContext(), "Location Removed",
+                                            Toast.LENGTH_SHORT).show();
                                 }
                             })
                             .setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
@@ -479,7 +519,12 @@ public class MapsActivity extends FragmentActivity
     @Override
     public boolean onMarkerClick(Marker marker)
     {
-        showPlaceInfo(marker);
+        if(!partnerLocs) {
+            showPlaceInfo(marker);
+        }
+        else{
+            marker.showInfoWindow();
+        }
         return true;
     }
 

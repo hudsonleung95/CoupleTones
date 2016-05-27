@@ -51,7 +51,7 @@ public class ShowListActivity extends AppCompatActivity
     long [] vibe1 = {0, 500, 200, 500}; //two long vibrates
     long [] vibe2 = {0, 250, 100, 250}; //two short vibrates
     long [] vibe3 = {0, 350, 400, 350}; //two medium vibrates
-    long [] vibe4 = {0, 200, 100, 200, 100, 200}; //three short vibrates
+    long [] vibe4 = {0, 300, 100, 300, 100, 300}; //three short vibrate
     long [] vibe5 = {0, 250, 250, 250}; //two short vibrates, medium pause between
     long [] vibe6 = {0, 250, 200, 500}; //one short vibrate, then long vibrate
     long [] vibe7 = {0, 500, 200, 250}; //one long vibrate, then short vibrate
@@ -110,7 +110,10 @@ public class ShowListActivity extends AppCompatActivity
     }
 
     public void showOnMap(View view){
-
+        Intent mapsIntent = new Intent(ShowListActivity.this, MapsActivity.class);
+        mapsIntent.putExtra("LOC_CLICKED", locationNames.get(indexOf));
+        mapsIntent.putExtra("SHOW_PARTNER_LOCS", true);
+        startActivity(mapsIntent);
     }
 
     public void chooseVibeNotification(View view){

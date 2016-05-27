@@ -31,17 +31,19 @@ public class AddActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_add);
         init();
-
-        if(dataStorage.getFirstTime()){
-            startActivity(new Intent(AddActivity.this, WelcomeActivity.class));
-            dataStorage.setFirstTime(false);
+        Bundle extras = getIntent().getExtras();
+        if(extras != null && extras.getBoolean("CHANGE_PARTNER")) {
+            TextView title = (TextView) findViewById(R.id.add_tv_logo);
+            title.setText("Change Your Partner");
         }
-        else
-        {
-            startActivity(new Intent(AddActivity.this, HistoryActivity.class));
+        else{
+            if (dataStorage.getFirstTime()) {
+                startActivity(new Intent(AddActivity.this, WelcomeActivity.class));
+                dataStorage.setFirstTime(false);
+            } else {
+                startActivity(new Intent(AddActivity.this, HistoryActivity.class));
+            }
         }
-
-
     }
 
     /**
