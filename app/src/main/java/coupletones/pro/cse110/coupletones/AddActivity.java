@@ -9,6 +9,9 @@ import android.widget.EditText;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import com.parse.ParseUser;
+import com.parse.ui.ParseLoginBuilder;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -17,21 +20,38 @@ import java.util.HashMap;
  */
 public class AddActivity extends AppCompatActivity
 {
+    private static final int LOGIN_REQUEST = 0;
+
     private static final String TAG = AddActivity.class.getSimpleName();
     private TextView tv_ur_email;
     private EditText et_self_id;
     private EditText et_input_id;
     private DataStorage dataStorage;
     private ParseClient parseClient;
+    private ParseUser currentUser;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        /*ParseLoginBuilder builder = new ParseLoginBuilder(AddActivity.this);
+        startActivityForResult(builder.build(), 0);*/
+
         setContentView(R.layout.layout_add);
         init();
         Bundle extras = getIntent().getExtras();
+
+        if (currentUser != null) {
+            startActivity(new Intent(AddActivity.this, HistoryActivity.class));
+        }
+        else {
+            ParseLoginBuilder loginBuilder = new ParseLoginBuilder(
+                    AddActivity.this);
+            startActivityForResult(loginBuilder.build(), LOGIN_REQUEST);
+        }
+
         if(extras != null && extras.getBoolean("CHANGE_PARTNER")) {
             TextView title = (TextView) findViewById(R.id.add_tv_logo);
             title.setText("Change Your Partner");
@@ -45,6 +65,15 @@ public class AddActivity extends AppCompatActivity
             }
         }
     }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        currentUser = ParseUser.getCurrentUser();
+    }
+
 
     /**
      * this method will be called when first open the app.
