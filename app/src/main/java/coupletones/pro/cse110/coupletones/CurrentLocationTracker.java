@@ -227,7 +227,7 @@ public class CurrentLocationTracker extends Service implements LocationListener{
 
             //Send message
             parseClient.sendNotification("Your partner visited " + locToSendNotification + " at "
-                    + currTime);
+                    + currTime, true, locToSendNotification);
             locLastVisited = locToSendNotification;
         }
     }
