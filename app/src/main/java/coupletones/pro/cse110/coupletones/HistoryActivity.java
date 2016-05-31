@@ -102,6 +102,9 @@ public class HistoryActivity extends AppCompatActivity
 
         //Keep the current location running through the background to make sure to receive the
         //notifications
+
+//        Intent mapsIntent = new Intent(ShowListActivity.this, MapsActivity.class);
+//        mapsIntent.putExtra("SHOW_PARTNER_LOCS", true);
         startService(new Intent(HistoryActivity.this, CurrentLocationTracker.class));
 
     }

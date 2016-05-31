@@ -40,11 +40,13 @@ public class CurrentLocationTracker extends Service implements LocationListener{
     // flag for GPS status
     boolean canGetLoc = false;
 
+    Location lastVisited;
     Location currLoc;
     double latitude, longitude;
     private List<LatLng> latLngs;
     private List<String> locationNames;
     private HashMap<String, Long> timesLastVisited;
+    private HashMap<String, Long> timeLastDepart;
     private String locLastVisited;
     private String locToSendNotification;
 
@@ -75,6 +77,7 @@ public class CurrentLocationTracker extends Service implements LocationListener{
         latLngs = new ArrayList<LatLng>();
         locationNames = new ArrayList<String>();
         timesLastVisited = new HashMap<String, Long>();
+        timeLastDepart = new HashMap<String, Long>();
         parseClient = new ParseClient(this);
     }
 
@@ -173,6 +176,14 @@ public class CurrentLocationTracker extends Service implements LocationListener{
         if (isAtLoc()) {
             sendNotification();
         }
+
+        //has visit some fav before
+        if (lastVisited != null){
+            //if not within last fav = departed
+            if(!isWithinFavLoc(lastVisited)){
+                sendDepartNoti();
+            }
+        }
     }
 
     /**
@@ -197,6 +208,7 @@ public class CurrentLocationTracker extends Service implements LocationListener{
             temp.setLongitude(point.longitude);
 
             if (isWithinFavLoc(temp)) {
+                lastVisited = temp;
                 return locationNames.get(i);
             }
         }
@@ -213,7 +225,7 @@ public class CurrentLocationTracker extends Service implements LocationListener{
      */
     public void sendNotification() {
         if (isAtLoc() && (!locLastVisited.equals(locToSendNotification) ||
-                pastTimeLimit(locToSendNotification))){
+                pastTimeLimit(locToSendNotification, true))){
 
             //Get timestamp
             Date date = new Date();
@@ -229,6 +241,21 @@ public class CurrentLocationTracker extends Service implements LocationListener{
             parseClient.sendNotification("Your partner visited " + locToSendNotification + " at "
                     + currTime);
             locLastVisited = locToSendNotification;
+        }
+    }
+
+    private void sendDepartNoti(){
+        if(pastTimeLimit(locLastVisited, false)){
+            //Get timestamp
+            Date date = new Date();
+            DateFormat dateFormat = new SimpleDateFormat("hh:mm a", Locale.US);
+            String currTime = dateFormat.format(date);
+
+            timeLastDepart.put(locLastVisited, System.currentTimeMillis());
+
+            //Send message
+            parseClient.sendNotification("Your partner departed " + locLastVisited + " at "
+                    + currTime);
         }
     }
 
@@ -254,10 +281,16 @@ public class CurrentLocationTracker extends Service implements LocationListener{
      * @param locName name of location to send notification
      * @return whether the location was visited in the last 30 minutes or not
      */
-    private boolean pastTimeLimit(String locName){
-        if(timesLastVisited.get(locName) == null) return true;
-        return (System.currentTimeMillis() - timesLastVisited.get(locName)) >
+    private boolean pastTimeLimit(String locName, boolean isArrival){
+        if(isArrival) {
+            if (timesLastVisited.get(locName) == null) return true;
+            return (System.currentTimeMillis() - timesLastVisited.get(locName)) >
                     TIME_BTWN_SAME_LOC;
+        }else{ //depart
+            if (timeLastDepart.get(locName) == null) return true;
+            return (System.currentTimeMillis() - timeLastDepart.get(locName)) >
+                    TIME_BTWN_SAME_LOC;
+        }
     }
 
     /**
