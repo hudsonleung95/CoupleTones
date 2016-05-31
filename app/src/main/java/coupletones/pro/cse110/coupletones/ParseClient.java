@@ -235,7 +235,8 @@ public class ParseClient
 
     public void pullPartnerFav(){
         final ArrayList<HashMap<String, String>> favs = new ArrayList<>();
-        if(context instanceof ShowListActivity){
+        if(context instanceof ShowListActivity ||
+                context instanceof PartnerListActivity){
             progressDialog.setMessage(context.getText(R.string.pc_download_fav).toString());
             progressDialog.show();
         }
@@ -268,8 +269,9 @@ public class ParseClient
                         Log.d("FAV : ", "fav added : " + favs.size());
 
                         if (context instanceof ShowListActivity){
-
-                        }
+//                            ((PartnerListActivity) context).updateList(favs);
+                        }else if (context instanceof PartnerListActivity)
+                            ((PartnerListActivity) context).updateList(favs);
 
                     }else{
                         //Display a toast if invalid id

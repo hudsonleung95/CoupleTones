@@ -9,8 +9,11 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RadioGroup;
+import android.widget.SimpleAdapter;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
@@ -28,23 +32,19 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * The ShowListActivity allows the user to see a list of the current saved locations when
- * the "Location Settings" is pressed
- */
-
-public class ShowListActivity extends AppCompatActivity
-        implements EditLocationDialog.LocationDialogListener {
+public class PartnerListActivity extends AppCompatActivity
+        implements EditLocationDialog.LocationDialogListener{
 
     private DataStorage dataStorage;
     private List<LatLng> latLngs;
     private List<String> locationNames;
-    private ArrayAdapter<String> adapter;
+//    private ArrayAdapter<String> adapter;
     private ListView listview;
     private int indexOf;
     private String chosenTone;
     private static final int REQUEST_PICK_TONE = 1;
     RadioGroup radioGroup;
+    private ArrayList<HashMap<String, String>> favs;
 
     //Custom vibration patterns, starts with delay (0) then alternates between vibrate and sleep
     //in milliseconds
@@ -65,69 +65,46 @@ public class ShowListActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.content_show_list);
+        setContentView(R.layout.content_partner_list);
 
-        listview = (ListView) findViewById(R.id.listView);
+        listview = (ListView) findViewById(R.id.partnerlistView);
 
         //Initialize variables
         dataStorage = new DataStorage(this);
-        latLngs = new ArrayList<LatLng>();
-        locationNames = new ArrayList<String>();
-        parseClient = new ParseClient(this);
-       // parseClient.pullPartnerFav();
 
-        updateList();
+        parseClient = new ParseClient(this);
+        parseClient.pullPartnerFav();
 
         if (listview != null) {
             listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, final View view,
                                         int position, long id) {
-
-                    //Get location clicked by using the position as index in ArrayList
                     indexOf = position;
-                    DialogFragment dialog = new EditLocationDialog();
-                    dialog.show(getFragmentManager(), getText(R.string.edit_location).toString());
+                    LayoutInflater inflater = getLayoutInflater();
+                    View dialoglayout = inflater.inflate(R.layout.layout_dialog_partner_location_settings,
+                            null);
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(PartnerListActivity.this);
+                    builder.setCancelable(true);
+                    builder.setView(dialoglayout);
+                    builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+
+                    builder.show();
 
                 }
             });
         }
-
-//        if (listview != null) {
-//            listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//                @Override
-//                public void onItemClick(AdapterView<?> parent, final View view,
-//                                        int position, long id) {
-//                    indexOf = position;
-//                    LayoutInflater inflater = getLayoutInflater();
-//                    View dialoglayout = inflater.inflate(R.layout.layout_dialog_partner_location_settings,
-//                            null);
-//                    final AlertDialog.Builder builder = new AlertDialog.Builder(ShowListActivity.this);
-//                    builder.setCancelable(true);
-//                    builder.setView(dialoglayout);
-//                    builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            dialog.cancel();
-//                        }
-//                    });
-//
-//                    builder.show();
-//
-//                        //Get location clicked by using the position as index in ArrayList
-////                        indexOf = position;
-////                        DialogFragment dialog = new EditLocationDialog();
-////                        dialog.show(getFragmentManager(), getText(R.string.edit_location).toString());
-//
-//                    }
-//                });
-//            }
     }
 
     public void showOnMap(View view){
-        Intent mapsIntent = new Intent(ShowListActivity.this, MapsActivity.class);
+        Intent mapsIntent = new Intent(PartnerListActivity.this, MapsActivity.class);
         mapsIntent.putExtra("LOC_CLICKED", locationNames.get(indexOf));
-        mapsIntent.putExtra("SHOW_My_LOCS", true);
+        mapsIntent.putExtra("SHOW_PARTNER_LOCS", true);
         startActivity(mapsIntent);
     }
 
@@ -136,13 +113,14 @@ public class ShowListActivity extends AppCompatActivity
         final View vibeToneLayout = inflater.inflate(R.layout.vibrate_notifications_list,
                 null);
         radioGroup = (RadioGroup) vibeToneLayout.findViewById(R.id.vibe_list_radio_group);
-        final AlertDialog.Builder builder = new AlertDialog.Builder(ShowListActivity.this);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(PartnerListActivity.this);
         builder.setView(vibeToneLayout);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //Save Vibe tone
-                int vibePatternIndex = radioGroup.indexOfChild(vibeToneLayout.findViewById(radioGroup.getCheckedRadioButtonId()));
+                int vibePatternIndex = radioGroup.indexOfChild(vibeToneLayout.
+                                    findViewById(radioGroup.getCheckedRadioButtonId()));
 
             }
         });
@@ -154,13 +132,13 @@ public class ShowListActivity extends AppCompatActivity
         });
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-              @Override
-              public void onCheckedChanged(RadioGroup group, int checkedId) {
-                  // checkedId is the RadioButton selected
-                  Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                  int vibeIndex = radioGroup.indexOfChild(vibeToneLayout.findViewById(radioGroup.getCheckedRadioButtonId()));
-                  v.vibrate(vibeTones[vibeIndex], -1);
-              }
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                // checkedId is the RadioButton selected
+                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                int vibeIndex = radioGroup.indexOfChild(vibeToneLayout.findViewById(radioGroup.getCheckedRadioButtonId()));
+                v.vibrate(vibeTones[vibeIndex], -1);
+            }
         });
         builder.show();
     }
@@ -215,7 +193,7 @@ public class ShowListActivity extends AppCompatActivity
             locationNames.set(indexOf, loc_name);
             String namesList = new Gson().toJson(locationNames);
             dataStorage.setLocNameList(namesList);
-            updateList();
+//            updateList();
         }
     }
 
@@ -227,29 +205,18 @@ public class ShowListActivity extends AppCompatActivity
     /**
      * Get the current saved locations from shared preferences and display on the list
      */
-    private void updateList(){
+    public void updateList(ArrayList<HashMap<String, String>> favs){
 
-        //Get the current saved locations from Shared Preferences
-        String favLatLngFromJson = dataStorage.getLatLngList();
-        String favNamesFromJson = dataStorage.getLocNameList();
+        this.favs = favs;
 
-        if(favNamesFromJson != null && favLatLngFromJson != null) {
-            String[] favNames = new Gson().fromJson(favNamesFromJson, String[].class);
-            LatLng[] favLatLng = new Gson().fromJson(favLatLngFromJson, LatLng[].class);
+        if(favs.size() > 1){
+            SimpleAdapter adapter = new SimpleAdapter(this, favs,
+                    android.R.layout.simple_list_item_2,
+                    new String[] {getText(R.string.parse_key_locName).toString()},
+                            //, getText(R.string.parse_key_date).toString()},
+                    new int[] {android.R.id.text1});
 
-            //Convert from json to the actual ArrayLists
-            latLngs = Arrays.asList(favLatLng);
-            latLngs = new ArrayList<LatLng>(latLngs);
-            locationNames = Arrays.asList(favNames);
-            locationNames = new ArrayList<String>(locationNames);
-
-            adapter = new ArrayAdapter(this,
-                    R.layout.list_item_mylocation,
-                    R.id.list_item_mylocation_textview, locationNames);
-
-            if (listview != null) {
-                listview.setAdapter(adapter);
-            }
+            listview.setAdapter(adapter);
         }
     }
 }
