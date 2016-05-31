@@ -18,6 +18,7 @@ import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 import com.parse.ParsePush;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -65,7 +66,7 @@ public class ParseClient
     public void sendNotification(String msg, boolean isArrival, String location){
         //target to partner's installation id
         ParseQuery query = ParseInstallation.getQuery();
-        query.whereEqualTo(context.getText(R.string.parse_key_installid).toString(),
+        query.whereEqualTo(context.getText(R.string.parse_key_userid).toString(),
                 data.getPartnerId());
 
         JSONObject data = new JSONObject();
@@ -93,8 +94,10 @@ public class ParseClient
         progressDialog.setMessage(context.getText(R.string.pc_checking).toString());
         progressDialog.show();
         ParseQuery<ParseObject> query =
-                ParseQuery.getQuery(context.getText(R.string.parse_key_table_install).toString());
-        query.whereEqualTo(context.getText(R.string.parse_key_installid).toString(), id);
+                ParseQuery.getQuery(context.getText(R.string.parse_key_table_user).toString());
+//        query.whereEqualTo(context.getText(R.string.parse_key_installid).toString(), id);
+        query.whereEqualTo(context.getText(R.string.parse_key_userid).toString(), id);
+//        query.whereEqualTo("userId", id);
 
         query.findInBackground(new FindCallback<ParseObject>() {
             public void done(List<ParseObject> resultList, ParseException e) {
@@ -105,6 +108,7 @@ public class ParseClient
 
                 //if exist
                 if (resultList != null){
+                    Log.d("SIZE :", ""+resultList.size());
                     if (resultList.size() > 0){
                         data.setPartnerId(id); //save partner id
                         context.startActivity(new Intent(context, HistoryActivity.class));
@@ -133,7 +137,7 @@ public class ParseClient
         parseObject.put(context.getText(R.string.parse_key_locName).toString(), name);
         parseObject.put(context.getText(R.string.parse_key_latlng).toString(),
                 new ParseGeoPoint(location.getLatitude(), location.getLongitude()));
-        parseObject.put(context.getText(R.string.parse_key_installid).toString(),
+        parseObject.put(context.getText(R.string.parse_key_userid).toString(),
                 data.getSelfId());
         parseObject.saveInBackground();
     }
@@ -146,7 +150,7 @@ public class ParseClient
                                 marker.getTitle());
         parseObject.put(context.getText(R.string.parse_key_latlng).toString(),
                 new ParseGeoPoint(marker.getPosition().latitude, marker.getPosition().longitude));
-        parseObject.put(context.getText(R.string.parse_key_installid).toString(),
+        parseObject.put(context.getText(R.string.parse_key_userid).toString(),
                 data.getSelfId());
         parseObject.saveInBackground();
     }
@@ -155,7 +159,7 @@ public class ParseClient
         ParseQuery query
                 = new ParseQuery(context.getText(R.string.parse_key_table_fav).toString());
 
-        query.whereEqualTo(context.getText(R.string.parse_key_installid).toString(),
+        query.whereEqualTo(context.getText(R.string.parse_key_userid).toString(),
                 data.getPartnerId());
         query.whereEqualTo(context.getText(R.string.parse_key_latlng).toString(),
                 new ParseGeoPoint(latLng.latitude, latLng.longitude));
@@ -200,7 +204,7 @@ public class ParseClient
         ParseQuery<ParseObject> query =
                 ParseQuery.getQuery(context.getText(R.string.parse_key_table_history).toString());
 
-        query.whereEqualTo(context.getText(R.string.parse_key_installid).toString(),
+        query.whereEqualTo(context.getText(R.string.parse_key_userid).toString(),
                 data.getPartnerId());
 
         query.findInBackground(new FindCallback<ParseObject>() {
@@ -252,7 +256,7 @@ public class ParseClient
         ParseQuery<ParseObject> query =
                 ParseQuery.getQuery(context.getText(R.string.parse_key_table_fav).toString());
 
-        query.whereEqualTo(context.getText(R.string.parse_key_installid).toString(),
+        query.whereEqualTo(context.getText(R.string.parse_key_userid).toString(),
                 data.getPartnerId());
 
         query.findInBackground(new FindCallback<ParseObject>() {
@@ -284,6 +288,32 @@ public class ParseClient
                         //Display a toast if invalid id
                         Toast.makeText(context,
                                 context.getText(R.string.pc_empty_fav).toString(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
+    }
+
+    public void saveUserId(final String username){
+        ParseQuery<ParseObject> query =
+                ParseQuery.getQuery(context.getText(R.string.parse_key_table_install).toString());
+        query.whereEqualTo(context.getText(R.string.parse_key_installid).toString(), data.getSelfInstallId());
+
+        query.findInBackground(new FindCallback<ParseObject>() {
+            public void done(List<ParseObject> resultList, ParseException e) {
+
+                //if exist
+                if (resultList != null){
+                    if (resultList.size() == 1){
+                        ParseObject result = resultList.get(0);
+                        result.put(context.getText(R.string.parse_key_userid).toString(),
+                                        username);
+                        result.saveInBackground();
+                    }else{
+                        //Display a toast if invalid id
+                        Toast.makeText(context,
+                                context.getText(R.string.add_warn_id_notfound).toString(),
                                 Toast.LENGTH_SHORT).show();
                     }
                 }

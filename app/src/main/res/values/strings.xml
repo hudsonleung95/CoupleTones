@@ -15,18 +15,22 @@
     <string name="parse_key_table_install">_Installation</string>
     <string name="parse_key_table_history">LocHistory</string>
     <string name="parse_key_table_fav">FavLocation</string>
+    <string name="parse_key_table_user">_User</string>
     <string name="parse_key_latlng">loc_latlng</string>
     <string name="parse_key_locName">loc_name</string>
     <string name="parse_key_tone_arv">loc_tone_arv</string>
     <string name="parse_key_tone_dpt">loc_tone_dpt</string>
     <string name="parse_key_date">createdAt</string>
+    <string name="parse_key_userid">username</string>
     <string name="sp_key_location">LOCATION</string>
     <string name="sp_key_parse_ids">PARSE_IDS</string>
     <string name="sp_key_setting">USER_SETTING</string>
     <string name="sp_key_list_latlng">LIST_LATLNG</string>
     <string name="sp_key_list_locname">LIST_LOC_NAME</string>
     <string name="sp_key_item_partnerid">PARTNER_ID</string>
-    <string name="sp_key_item_selfid">SELF_ID</string>
+    <string name="sp_key_item_selfinstallid">SELF_INSTALL_ID</string>
+    <string name="sp_key_item_selfuserid">SELF_USER_ID</string>
+
     <string name="sp_key_item_first_time">FIRST_TIME</string>
 
     <!-- parseClient -->

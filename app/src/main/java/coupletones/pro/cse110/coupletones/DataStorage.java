@@ -50,14 +50,25 @@ public class DataStorage
         editor.commit();
     }
 
+    public String getSelfInstallId(){
+        return partner.getString(context.getText(R.string.sp_key_item_selfinstallid).toString(),
+                null);
+    }
+
+    public void setSelfInstallId(String id){
+        editor = partner.edit();
+        editor.putString(context.getText(R.string.sp_key_item_selfinstallid).toString(), id);
+        editor.commit();
+    }
+
     public String getSelfId(){
-        return partner.getString(context.getText(R.string.sp_key_item_selfid).toString(),
+        return partner.getString(context.getText(R.string.sp_key_item_selfuserid).toString(),
                 null);
     }
 
     public void setSelfId(String id){
         editor = partner.edit();
-        editor.putString(context.getText(R.string.sp_key_item_selfid).toString(), id);
+        editor.putString(context.getText(R.string.sp_key_item_selfuserid).toString(), id);
         editor.commit();
     }
 
