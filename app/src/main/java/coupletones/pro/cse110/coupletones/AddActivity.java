@@ -42,6 +42,7 @@ public class AddActivity extends AppCompatActivity
         setContentView(R.layout.layout_add);
         init();
         Bundle extras = getIntent().getExtras();
+        currentUser = ParseUser.getCurrentUser();
 
         if (dataStorage.getSelfId() == null || currentUser == null) {
             ParseLoginBuilder loginBuilder = new ParseLoginBuilder(
