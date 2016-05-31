@@ -31,7 +31,7 @@ public class CTApplication extends Application
         ParseInstallation installation = ParseInstallation.getCurrentInstallation();
         installation.saveInBackground();
 
-        new DataStorage(this).setSelfId(installation.getInstallationId());
+        new DataStorage(this).setSelfInstallId(installation.getInstallationId());
 
         // initialize the singleton
         sInstance = this;
