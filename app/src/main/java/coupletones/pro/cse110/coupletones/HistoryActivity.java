@@ -54,7 +54,8 @@ public class HistoryActivity extends AppCompatActivity
         settingsList = (ListView) findViewById(R.id.settings_list);
 
         // creates the sidebar and shows the options
-        String[] settingsArr = { "Partner Settings", "Location List Settings", "Help" };
+        String[] settingsArr = { "Partner Settings", "My Fav Location List",
+                                    "Partner's Fav Loc List", "Help", "Log Out" };
         settingsAdapter = new ArrayAdapter<String>(this, R.layout.layout_list_item, settingsArr);
         settingsList.setAdapter(settingsAdapter);
 
@@ -73,8 +74,17 @@ public class HistoryActivity extends AppCompatActivity
                         startActivity(showListIntent);
                         break;
                     case 2:
+                        Intent partnerListIntent = new Intent(HistoryActivity.this,
+                                                                PartnerListActivity.class);
+                        startActivity(partnerListIntent);
+                        break;
+                    case 3:
                         Intent introIntent = new Intent(HistoryActivity.this, WelcomeActivity.class);
                         startActivity(introIntent);
+                        break;
+                    case 4:
+                        Intent logOutIntent = new Intent(HistoryActivity.this, Logout.class);
+                        startActivity(logOutIntent);
                         break;
                 }
             }
