@@ -20,6 +20,9 @@ import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -60,14 +63,24 @@ public class ParseClient
      *      msg to be sent,
      *      in our case, we send the visited location
      */
-    public void sendNotification(String msg){
+    public void sendNotification(String msg, boolean isArrival, String location){
         //target to partner's installation id
         ParseQuery query = ParseInstallation.getQuery();
         query.whereEqualTo(context.getText(R.string.parse_key_userid).toString(),
                 data.getPartnerId());
+
+        JSONObject data = new JSONObject();
+        try {
+            data.put("alert", msg);
+            data.put("isArrival", isArrival);
+            data.put("location", location);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         ParsePush push = new ParsePush();
         push.setQuery(query);
-        push.setMessage(msg);
+        push.setData(data);
+
         push.sendInBackground();
     }
 
