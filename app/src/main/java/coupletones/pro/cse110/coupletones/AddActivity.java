@@ -43,7 +43,7 @@ public class AddActivity extends AppCompatActivity
         init();
         Bundle extras = getIntent().getExtras();
 
-        if (dataStorage.getSelfId() == null) {
+        if (dataStorage.getSelfId() == null || currentUser == null) {
             ParseLoginBuilder loginBuilder = new ParseLoginBuilder(
                     AddActivity.this);
             startActivityForResult(loginBuilder.build(), LOGIN_REQUEST);
@@ -71,6 +71,12 @@ public class AddActivity extends AppCompatActivity
         super.onStart();
 
         currentUser = ParseUser.getCurrentUser();
+
+        if(currentUser == null) {
+            ParseLoginBuilder loginBuilder = new ParseLoginBuilder(
+                    AddActivity.this);
+            startActivityForResult(loginBuilder.build(), LOGIN_REQUEST);
+        }
 
         if (dataStorage.getSelfId() == null && currentUser != null) {
             parseClient.saveUserId(currentUser.getUsername());
