@@ -255,7 +255,7 @@ public class CurrentLocationTracker extends Service implements LocationListener{
 
             //Send message
             parseClient.sendNotification("Your partner departed " + locLastVisited + " at "
-                    + currTime);
+                    + currTime, false, locLastVisited);
         }
     }
 
