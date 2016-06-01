@@ -18,8 +18,10 @@
     <string name="parse_key_table_user">_User</string>
     <string name="parse_key_latlng">loc_latlng</string>
     <string name="parse_key_locName">loc_name</string>
-    <string name="parse_key_tone_arv">loc_tone_arv</string>
-    <string name="parse_key_tone_dpt">loc_tone_dpt</string>
+    <string name="parse_key_audtone_arv">loc_audtone_arv</string>
+    <string name="parse_key_audtone_dpt">loc_audtone_dpt</string>
+    <string name="parse_key_vibtone_arv">loc_vibtone_arv</string>
+    <string name="parse_key_vibtone_dpt">loc_vibtone_dpt</string>
     <string name="parse_key_date">createdAt</string>
     <string name="parse_key_userid">username</string>
     <string name="sp_key_location">LOCATION</string>

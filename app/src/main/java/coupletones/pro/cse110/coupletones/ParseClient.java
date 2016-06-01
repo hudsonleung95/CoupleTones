@@ -155,7 +155,7 @@ public class ParseClient
         parseObject.saveInBackground();
     }
 
-    public void pushTone(final String tone, LatLng latLng, final boolean isArrival){
+    public void pushTone(final int tone, LatLng latLng, final boolean isArrival, final boolean isAudible){
         ParseQuery query
                 = new ParseQuery(context.getText(R.string.parse_key_table_fav).toString());
 
@@ -171,11 +171,17 @@ public class ParseClient
                 if (matches != null) {
                     if (matches.size() == 1) {
                         ParseObject result = matches.get(0);
-                        if(isArrival)
-                            result.put(context.getText(R.string.parse_key_tone_arv).toString(),
+                        if(isArrival && isAudible)
+                            result.put(context.getText(R.string.parse_key_audtone_arv).toString(),
                                     tone);
-                        else
-                            result.put(context.getText(R.string.parse_key_tone_dpt).toString(),
+                        else if (!isArrival && isAudible) //audible departure
+                            result.put(context.getText(R.string.parse_key_audtone_dpt).toString(),
+                                    tone);
+                        else if(isArrival && !isAudible) //vibe arrival
+                            result.put(context.getText(R.string.parse_key_vibtone_arv).toString(),
+                                    tone);
+                        else //vibe departure
+                            result.put(context.getText(R.string.parse_key_vibtone_dpt).toString(),
                                     tone);
                         result.saveInBackground();
                     }else{

@@ -176,7 +176,7 @@ public class PartnerListActivity extends AppCompatActivity
                 Uri defaultTone = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
                 chosenTone = defaultTone.toString();
             }
-            parseClient.pushTone(chosenTone, latLngs.get(indexOf), isArrivalTone);
+//            parseClient.pushTone(chosenTone, latLngs.get(indexOf), isArrivalTone);
         }
     }
 
