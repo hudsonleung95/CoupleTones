@@ -59,6 +59,8 @@ public class PartnerListActivity extends AppCompatActivity
     long [] vibe9 = {0, 500, 200, 250, 200, 250}; //one long vibrate, then two short vibrates
     long [] vibe10 = {0, 400, 200, 400, 250}; //two medium vibrates, one short vibrate
     long [][] vibeTones = {vibe1, vibe2, vibe3, vibe4, vibe5, vibe6, vibe7, vibe8, vibe9, vibe10};
+    int [] audibleTones = {R.raw.coins, R.raw.spring, R.raw.gentle_alarm, R.raw.tweet, R.raw.ache,
+            R.raw.chirp, R.raw.croak, R.raw.suppressed, R.raw.pedantic, R.raw.inquisitiveness};
     private boolean isArrivalTone;
     private ParseClient parseClient;
 
@@ -109,6 +111,11 @@ public class PartnerListActivity extends AppCompatActivity
     }
 
     public void chooseVibeNotification(View view){
+        if (view.getId() == R.id.set_vibe_arrival_tone)
+            isArrivalTone = true;
+        else
+            isArrivalTone = false;
+
         LayoutInflater inflater = getLayoutInflater();
         final View vibeToneLayout = inflater.inflate(R.layout.vibrate_notifications_list,
                 null);
@@ -121,6 +128,8 @@ public class PartnerListActivity extends AppCompatActivity
                 //Save Vibe tone
                 int vibePatternIndex = radioGroup.indexOfChild(vibeToneLayout.
                                     findViewById(radioGroup.getCheckedRadioButtonId()));
+
+                parseClient.pushTone(vibePatternIndex, latLngs.get(indexOf), isArrivalTone, false);
 
             }
         });
@@ -143,19 +152,49 @@ public class PartnerListActivity extends AppCompatActivity
         builder.show();
     }
 
-    public void chooseNotification(View view){
-        Button btn = (Button)view;
-        if(btn.getId() == R.id.set_audible_arrival_tone) {
+
+
+    public void chooseAudibleNotification(View view){
+        if (view.getId() == R.id.set_audible_arrival_tone)
             isArrivalTone = true;
-        }
         else
             isArrivalTone = false;
 
-        Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
-        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
-        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Notification Tone");
-        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, (Uri) null);
-        startActivityForResult(intent, REQUEST_PICK_TONE);
+        LayoutInflater inflater = getLayoutInflater();
+        final View audibleToneLayout = inflater.inflate(R.layout.audible_notifications_list,
+                null);
+        radioGroup = (RadioGroup) audibleToneLayout.findViewById(R.id.audible_list_radio_group);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(PartnerListActivity.this);
+        builder.setView(audibleToneLayout);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //Save Audible tone
+                int audiblePatternIndex = radioGroup.indexOfChild(audibleToneLayout.findViewById
+                        (radioGroup.getCheckedRadioButtonId()));
+
+                //Add code to save chosen index
+                parseClient.pushTone(audiblePatternIndex, latLngs.get(indexOf), isArrivalTone, true);
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                // checkedId is the RadioButton selected
+                int audibleIndex = radioGroup.indexOfChild(audibleToneLayout.findViewById(radioGroup.getCheckedRadioButtonId()));
+                String audioPath = "android.resource://coupletones.pro.cse110.coupletones/" +
+                        audibleTones[audibleIndex];
+                RingtoneManager.getRingtone(getApplicationContext(), Uri.parse(audioPath)).play();
+            }
+        });
+        builder.show();
     }
 
     @Override
@@ -208,6 +247,7 @@ public class PartnerListActivity extends AppCompatActivity
     public void updateList(ArrayList<HashMap<String, String>> favs){
 
         this.favs = favs;
+        latLngs = dataStorage.getPartnerLatLngList();
 
         if(favs.size() > 1){
             SimpleAdapter adapter = new SimpleAdapter(this, favs,

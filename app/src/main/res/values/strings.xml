@@ -29,6 +29,8 @@
     <string name="sp_key_setting">USER_SETTING</string>
     <string name="sp_key_list_latlng">LIST_LATLNG</string>
     <string name="sp_key_list_locname">LIST_LOC_NAME</string>
+    <string name="sp_key_list_partner_latlng">LIST_PARTNER_LATLNG</string>
+    <string name="sp_key_list_partner_locname">LIST_PARTNER_LOC_NAME</string>
     <string name="sp_key_item_partnerid">PARTNER_ID</string>
     <string name="sp_key_item_selfinstallid">SELF_INSTALL_ID</string>
     <string name="sp_key_item_selfuserid">SELF_USER_ID</string>

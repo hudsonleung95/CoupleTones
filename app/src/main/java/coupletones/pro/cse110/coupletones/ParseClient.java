@@ -254,6 +254,7 @@ public class ParseClient
 
     public void pullPartnerFav(){
         final ArrayList<HashMap<String, String>> favs = new ArrayList<>();
+        final ArrayList<LatLng> latLngs = new ArrayList<>();
         if(context instanceof ShowListActivity ||
                 context instanceof PartnerListActivity){
             progressDialog.setMessage(context.getText(R.string.pc_download_fav).toString());
@@ -278,14 +279,17 @@ public class ParseClient
                     if (favList.size() > 0){
                         for(ParseObject temp: favList){
                             HashMap<String, String> tempFav = new HashMap<String, String>();
+                            ParseGeoPoint tempGeo = (ParseGeoPoint) temp.get(context.getText(R.string.parse_key_latlng).toString());
 
                             tempFav.put(context.getText(R.string.parse_key_locName).toString()
                                     , (String)temp.get(context.getText(R.string.parse_key_locName).toString()));
 
+                            latLngs.add(new LatLng(tempGeo.getLatitude(), tempGeo.getLongitude()));
 
                             favs.add(tempFav);
                         }
                         Log.d("FAV : ", "fav added : " + favs.size());
+                        data.setPartnerLatLngList(latLngs);
 
                         if (context instanceof ShowListActivity){
 //                            ((PartnerListActivity) context).updateList(favs);
