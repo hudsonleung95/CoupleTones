@@ -33,7 +33,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="4dp"
-        android:onClick="chooseNotification"/>
+        android:onClick="chooseAudibleNotification"/>
     <Button
         android:id="@+id/set_audible_departure_tone"
         android:text="Set Departure Audible Tone"
@@ -42,7 +42,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="4dp"
-        android:onClick="chooseNotification" />
+        android:onClick="chooseAudibleNotification" />
     <Button
         android:id="@+id/set_vibe_arrival_tone"
         android:text="Set Arrival Vibe Tone"

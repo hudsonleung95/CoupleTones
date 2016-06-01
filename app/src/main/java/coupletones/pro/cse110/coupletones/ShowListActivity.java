@@ -59,6 +59,9 @@ public class ShowListActivity extends AppCompatActivity
     long [] vibe9 = {0, 500, 200, 250, 200, 250}; //one long vibrate, then two short vibrates
     long [] vibe10 = {0, 400, 200, 400, 250}; //two medium vibrates, one short vibrate
     long [][] vibeTones = {vibe1, vibe2, vibe3, vibe4, vibe5, vibe6, vibe7, vibe8, vibe9, vibe10};
+
+    int [] audibleTones = {R.raw.coins, R.raw.spring, R.raw.gentle_alarm, R.raw.tweet, R.raw.ache,
+            R.raw.chirp, R.raw.croak, R.raw.suppressed, R.raw.pedantic, R.raw.inquisitiveness};
     private boolean isArrivalTone;
     private ParseClient parseClient;
 
@@ -144,6 +147,8 @@ public class ShowListActivity extends AppCompatActivity
                 //Save Vibe tone
                 int vibePatternIndex = radioGroup.indexOfChild(vibeToneLayout.findViewById(radioGroup.getCheckedRadioButtonId()));
 
+                //Add code to save chosen index
+
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -165,19 +170,42 @@ public class ShowListActivity extends AppCompatActivity
         builder.show();
     }
 
-    public void chooseNotification(View view){
-        Button btn = (Button)view;
-        if(btn.getId() == R.id.set_audible_arrival_tone) {
-            isArrivalTone = true;
-        }
-        else
-            isArrivalTone = false;
+    public void chooseAudibleNotification(View view){
+        LayoutInflater inflater = getLayoutInflater();
+        final View audibleToneLayout = inflater.inflate(R.layout.audible_notifications_list,
+                null);
+        radioGroup = (RadioGroup) audibleToneLayout.findViewById(R.id.audible_list_radio_group);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(ShowListActivity.this);
+        builder.setView(audibleToneLayout);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //Save Audible tone
+                int audiblePatternIndex = radioGroup.indexOfChild(audibleToneLayout.findViewById
+                        (radioGroup.getCheckedRadioButtonId()));
 
-        Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
-        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
-        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Notification Tone");
-        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, (Uri) null);
-        startActivityForResult(intent, REQUEST_PICK_TONE);
+                //Add code to save chosen index
+
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                // checkedId is the RadioButton selected
+                int audibleIndex = radioGroup.indexOfChild(audibleToneLayout.findViewById(radioGroup.getCheckedRadioButtonId()));
+                String audioPath = "android.resource://coupletones.pro.cse110.coupletones/" +
+                        audibleTones[audibleIndex];
+                RingtoneManager.getRingtone(getApplicationContext(), Uri.parse(audioPath)).play();
+            }
+        });
+        builder.show();
     }
 
     @Override
