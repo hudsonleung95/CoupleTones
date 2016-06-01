@@ -89,9 +89,9 @@ public class ShowListActivity extends AppCompatActivity
 
                     //Get location clicked by using the position as index in ArrayList
                     indexOf = position;
-                    DialogFragment dialog = new EditLocationDialog();
-                    dialog.show(getFragmentManager(), getText(R.string.edit_location).toString());
-
+                    //DialogFragment dialog = new EditLocationDialog();
+                    //dialog.show(getFragmentManager(), getText(R.string.edit_location).toString());
+                    showOnMap();
                 }
             });
         }
@@ -127,7 +127,7 @@ public class ShowListActivity extends AppCompatActivity
 //            }
     }
 
-    public void showOnMap(View view){
+    public void showOnMap(){
         Intent mapsIntent = new Intent(ShowListActivity.this, MapsActivity.class);
         mapsIntent.putExtra("LOC_CLICKED", locationNames.get(indexOf));
         mapsIntent.putExtra("SHOW_My_LOCS", true);

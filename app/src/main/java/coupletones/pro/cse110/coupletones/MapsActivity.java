@@ -76,6 +76,7 @@ public class MapsActivity extends FragmentActivity
     private Location currMarkerLoc;
     private ParseClient parseClient;
     private boolean partnerLocs;
+    private boolean showMyLoc;
     private String locClicked;
     private Marker markerClicked;
 
@@ -84,15 +85,25 @@ public class MapsActivity extends FragmentActivity
         super.onCreate(savedInstanceState);
 
         Bundle extras = getIntent().getExtras();
+        TextView title = (TextView) findViewById(R.id.maps_title);
+
         partnerLocs = false;
+        showMyLoc = false;
         locClicked = "";
         if(extras != null){
             Log.d("GOT EXTRA :", "!!!!");
-            setContentView(R.layout.layout_partner_maps);
-            partnerLocs = extras.getBoolean("SHOW_PARTNER_LOCS");
+            if(extras.getBoolean("SHOW_My_LOCS")){
+                setContentView(R.layout.layout_maps);
+                showMyLoc = true;
+//                title.setText("Your Favorite Locations");
+
+            }
+            else {
+                setContentView(R.layout.layout_partner_maps);
+                partnerLocs = extras.getBoolean("SHOW_PARTNER_LOCS");
+                title.setText("Your Partner's Favorite Locations");
+            }
             locClicked = extras.getString("LOC_CLICKED");
-            TextView title = (TextView) findViewById(R.id.maps_title);
-            title.setText("Your Partner's Favorite Locations");
         }
         else {
             setContentView(R.layout.layout_maps);
@@ -148,13 +159,15 @@ public class MapsActivity extends FragmentActivity
         }
         mMap.setOnMarkerClickListener(this);
 
-        if(!partnerLocs) {
+        if(showMyLoc || partnerLocs){
             loadMarkers();
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(markerClicked.getPosition(), ZOOMLV));
+            markerClicked.showInfoWindow();
         }
         else{
             loadMarkers();         //change to loadPartnerMarkers() later
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(markerClicked.getPosition(), ZOOMLV));
-            markerClicked.showInfoWindow();
+//            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(markerClicked.getPosition(), ZOOMLV));
+//            markerClicked.showInfoWindow();
         }
     }
 
