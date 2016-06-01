@@ -54,7 +54,6 @@
     <string name="add_warn_id_notfound">ID not found, Please try again</string>
 
 
-
     <!-- used in HistoryActivity -->
     <string name="hist_empty">Your partner has not visited any of their favorite location</string>
     <string name="hist_map">Map</string>
@@ -106,6 +105,13 @@
     <string name="drawer_cancel">Cancel</string>
     <string name="title_activity_show_list">ShowListActivity</string>
     <string name="title_activity_edit_location">EditLocationActivity</string>
+    <string name="title_activity_partner_list">PartnerListActivity</string>
+
+    <string name="title_activity_logout">Logout</string>
+
+    <!-- used in log out activity -->
+    <string name="profile_title_logged_in">Your are logged in as</string>
+    <string name="profile_logout_button_label">Log out</string>
 
 
 </resources>

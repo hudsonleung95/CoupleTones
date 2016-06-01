@@ -50,6 +50,7 @@
                       android:layout_below="@+id/map_search"/>
 
         </RelativeLayout>
+    </LinearLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -131,5 +132,5 @@
             </LinearLayout>
 
         </RelativeLayout>
-    </LinearLayout>
+
 </android.support.v4.widget.DrawerLayout>

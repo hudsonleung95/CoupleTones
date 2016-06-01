@@ -77,7 +77,7 @@ public class ShowListActivity extends AppCompatActivity
         latLngs = new ArrayList<LatLng>();
         locationNames = new ArrayList<String>();
         parseClient = new ParseClient(this);
-        parseClient.pullPartnerFav();
+       // parseClient.pullPartnerFav();
 
         updateList();
 
@@ -86,36 +86,51 @@ public class ShowListActivity extends AppCompatActivity
                 @Override
                 public void onItemClick(AdapterView<?> parent, final View view,
                                         int position, long id) {
+
+                    //Get location clicked by using the position as index in ArrayList
                     indexOf = position;
-                    LayoutInflater inflater = getLayoutInflater();
-                    View dialoglayout = inflater.inflate(R.layout.layout_dialog_partner_location_settings,
-                            null);
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(ShowListActivity.this);
-                    builder.setCancelable(true);
-                    builder.setView(dialoglayout);
-                    builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                    });
+                    DialogFragment dialog = new EditLocationDialog();
+                    dialog.show(getFragmentManager(), getText(R.string.edit_location).toString());
 
-                    builder.show();
+                }
+            });
+        }
 
-                        //Get location clicked by using the position as index in ArrayList
-//                        indexOf = position;
-//                        DialogFragment dialog = new EditLocationDialog();
-//                        dialog.show(getFragmentManager(), getText(R.string.edit_location).toString());
-
-                    }
-                });
-            }
+//        if (listview != null) {
+//            listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                @Override
+//                public void onItemClick(AdapterView<?> parent, final View view,
+//                                        int position, long id) {
+//                    indexOf = position;
+//                    LayoutInflater inflater = getLayoutInflater();
+//                    View dialoglayout = inflater.inflate(R.layout.layout_dialog_partner_location_settings,
+//                            null);
+//                    final AlertDialog.Builder builder = new AlertDialog.Builder(ShowListActivity.this);
+//                    builder.setCancelable(true);
+//                    builder.setView(dialoglayout);
+//                    builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            dialog.cancel();
+//                        }
+//                    });
+//
+//                    builder.show();
+//
+//                        //Get location clicked by using the position as index in ArrayList
+////                        indexOf = position;
+////                        DialogFragment dialog = new EditLocationDialog();
+////                        dialog.show(getFragmentManager(), getText(R.string.edit_location).toString());
+//
+//                    }
+//                });
+//            }
     }
 
     public void showOnMap(View view){
         Intent mapsIntent = new Intent(ShowListActivity.this, MapsActivity.class);
         mapsIntent.putExtra("LOC_CLICKED", locationNames.get(indexOf));
-        mapsIntent.putExtra("SHOW_PARTNER_LOCS", true);
+        mapsIntent.putExtra("SHOW_My_LOCS", true);
         startActivity(mapsIntent);
     }
 

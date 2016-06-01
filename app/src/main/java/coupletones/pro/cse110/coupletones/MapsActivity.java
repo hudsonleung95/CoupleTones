@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -86,6 +87,7 @@ public class MapsActivity extends FragmentActivity
         partnerLocs = false;
         locClicked = "";
         if(extras != null){
+            Log.d("GOT EXTRA :", "!!!!");
             setContentView(R.layout.layout_partner_maps);
             partnerLocs = extras.getBoolean("SHOW_PARTNER_LOCS");
             locClicked = extras.getString("LOC_CLICKED");
@@ -138,9 +140,11 @@ public class MapsActivity extends FragmentActivity
         mMap.getUiSettings().setZoomControlsEnabled(true);
 
         if(!partnerLocs) {
+            Log.d("GO TO INTI :", "!!!!");
+            init(); //initialize components
             mMap.setOnMapLongClickListener(this);
             mMap.setOnMarkerDragListener(this);
-            init(); //initialize components
+
         }
         mMap.setOnMarkerClickListener(this);
 
