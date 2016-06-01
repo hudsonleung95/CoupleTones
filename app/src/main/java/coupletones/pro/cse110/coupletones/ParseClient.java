@@ -63,7 +63,7 @@ public class ParseClient
      *      msg to be sent,
      *      in our case, we send the visited location
      */
-    public void sendNotification(String msg, boolean isArrival, String location){
+    public void sendNotification(String msg, boolean isArrival, String location, LatLng latLng){
         //target to partner's installation id
         ParseQuery query = ParseInstallation.getQuery();
         query.whereEqualTo(context.getText(R.string.parse_key_userid).toString(),
@@ -74,6 +74,9 @@ public class ParseClient
             data.put("alert", msg);
             data.put("isArrival", isArrival);
             data.put("location", location);
+            data.put("loc_lat", latLng.latitude);
+            data.put("loc_lng", latLng.longitude);
+//            data.put(context.getText(R.string.parse_key_latlng).toString(), latLng);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -326,6 +329,49 @@ public class ParseClient
                         //Display a toast if invalid id
                         Toast.makeText(context,
                                 context.getText(R.string.add_warn_id_notfound).toString(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
+    }
+
+    public void pullToneIndex(LatLng latLng, final boolean isArrival){
+        final int [] tones = new int[2];
+        tones[0] = -1;
+        tones[1] = -1;
+        ParseQuery query
+                = new ParseQuery(context.getText(R.string.parse_key_table_fav).toString());
+
+        query.whereEqualTo(context.getText(R.string.parse_key_userid).toString(),
+                data.getPartnerId());
+        query.whereEqualTo(context.getText(R.string.parse_key_latlng).toString(),
+                new ParseGeoPoint(latLng.latitude, latLng.longitude));
+
+        query.findInBackground(new FindCallback<ParseObject>() {
+            public void done(List<ParseObject> favList, ParseException e) {
+
+                Log.d("FINDING TONES :", "TEST");
+                //if have visited any of the fav
+                if (favList != null){
+                    if (favList.size() == 1){
+
+                        ParseObject result = favList.get(0);
+                        if(isArrival) {
+                            tones[0] = result.getInt(context.getText(R.string.parse_key_audtone_arv).toString());
+                            tones[1] = result.getInt(context.getText(R.string.parse_key_vibtone_arv).toString());
+                        }else{
+                            tones[0] = result.getInt(context.getText(R.string.parse_key_audtone_dpt).toString());
+                            tones[1] = result.getInt(context.getText(R.string.parse_key_vibtone_dpt).toString());
+                        }
+
+                        Log.d("GOT TONES :", "" +tones[0] +" | "+tones[1]);
+                        PushNotificationReceiver.saveTones(tones);
+
+                    }else{
+                        //Display a toast if invalid id
+                        Toast.makeText(context,
+                                context.getText(R.string.pc_empty_fav).toString(),
                                 Toast.LENGTH_SHORT).show();
                     }
                 }

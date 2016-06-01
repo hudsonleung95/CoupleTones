@@ -6,6 +6,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,6 +14,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -127,6 +130,11 @@ public class HistoryActivity extends AppCompatActivity
         return true;
     }
 
+//    private void testNoti(){
+//        Log.d("TESTING :", "TEST");
+//        parseClient.sendNotification("TEST", false, "Abc", new LatLng(32.8656055, -117.23196790000001));
+//    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
@@ -136,6 +144,7 @@ public class HistoryActivity extends AppCompatActivity
 
         //when press the map button, show map
         if(item.getItemId() == R.id.hist_tomap)
+//            testNoti();
             startActivity(new Intent(this, MapsActivity.class));
         else if(item.getItemId() == R.id.hist_refresh)
             parseClient.pullPartnerHistory();

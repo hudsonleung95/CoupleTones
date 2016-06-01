@@ -239,7 +239,8 @@ public class CurrentLocationTracker extends Service implements LocationListener{
 
             //Send message
             parseClient.sendNotification("Your partner visited " + locToSendNotification + " at "
-                    + currTime, true, locToSendNotification);
+                    + currTime, true, locToSendNotification
+                    , new LatLng(lastVisited.getLatitude(), lastVisited.getLongitude()));
             locLastVisited = locToSendNotification;
         }
     }
@@ -255,7 +256,7 @@ public class CurrentLocationTracker extends Service implements LocationListener{
 
             //Send message
             parseClient.sendNotification("Your partner departed " + locLastVisited + " at "
-                    + currTime, false, locLastVisited);
+                    + currTime, false, locLastVisited, new LatLng(lastVisited.getLatitude(), lastVisited.getLongitude()));
         }
     }
 
