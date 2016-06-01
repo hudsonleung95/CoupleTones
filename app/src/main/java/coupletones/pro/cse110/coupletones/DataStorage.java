@@ -3,6 +3,12 @@ package coupletones.pro.cse110.coupletones;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.Gson;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  * this is the centralized data storage with SharedPreferences
  * Contains all the getters and setters to access and change the data
@@ -94,6 +100,45 @@ public class DataStorage
         editor.putBoolean(context.getText(R.string.sp_key_item_first_time).toString(),
                 firstTime);
         editor.commit();
+    }
+
+    public void setPartnerLatLngList(ArrayList<LatLng> latLngs){
+
+        editor = locations.edit();
+        editor.putString(context.getText(R.string.sp_key_list_partner_latlng).toString()
+                , new Gson().toJson(latLngs));
+        editor.commit();
+    }
+
+    public void setPartnerLocNameList(ArrayList<String> locNames){
+        editor = locations.edit();
+        editor.putString(context.getText(R.string.sp_key_list_partner_locname).toString()
+                , new Gson().toJson(locNames));
+        editor.commit();
+    }
+
+    public ArrayList<LatLng> getPartnerLatLngList(){
+        String favLatLngFromJson = locations.getString(
+                context.getText(R.string.sp_key_list_partner_latlng).toString(),
+                null);
+        if(favLatLngFromJson != null){
+            LatLng[] favLatLng = new Gson().fromJson(favLatLngFromJson, LatLng[].class);
+            return new ArrayList<LatLng>(Arrays.asList(favLatLng));
+        }
+
+        return null;
+    }
+
+    public ArrayList<String> getPartnerLocNameList(){
+        String favLatLngFromJson = locations.getString(
+                context.getText(R.string.sp_key_list_partner_locname).toString(),
+                null);
+        if(favLatLngFromJson != null){
+            String[] favLocNames = new Gson().fromJson(favLatLngFromJson, String[].class);
+            return new ArrayList<String>(Arrays.asList(favLocNames));
+        }
+
+        return null;
     }
 
 }

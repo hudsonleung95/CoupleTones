@@ -155,7 +155,7 @@ public class ParseClient
         parseObject.saveInBackground();
     }
 
-    public void pushTone(final String tone, LatLng latLng, final boolean isArrival){
+    public void pushTone(final int tone, LatLng latLng, final boolean isArrival, final boolean isAudible){
         ParseQuery query
                 = new ParseQuery(context.getText(R.string.parse_key_table_fav).toString());
 
@@ -171,11 +171,17 @@ public class ParseClient
                 if (matches != null) {
                     if (matches.size() == 1) {
                         ParseObject result = matches.get(0);
-                        if(isArrival)
-                            result.put(context.getText(R.string.parse_key_tone_arv).toString(),
+                        if(isArrival && isAudible)
+                            result.put(context.getText(R.string.parse_key_audtone_arv).toString(),
                                     tone);
-                        else
-                            result.put(context.getText(R.string.parse_key_tone_dpt).toString(),
+                        else if (!isArrival && isAudible) //audible departure
+                            result.put(context.getText(R.string.parse_key_audtone_dpt).toString(),
+                                    tone);
+                        else if(isArrival && !isAudible) //vibe arrival
+                            result.put(context.getText(R.string.parse_key_vibtone_arv).toString(),
+                                    tone);
+                        else //vibe departure
+                            result.put(context.getText(R.string.parse_key_vibtone_dpt).toString(),
                                     tone);
                         result.saveInBackground();
                     }else{
@@ -248,6 +254,7 @@ public class ParseClient
 
     public void pullPartnerFav(){
         final ArrayList<HashMap<String, String>> favs = new ArrayList<>();
+        final ArrayList<LatLng> latLngs = new ArrayList<>();
         if(context instanceof ShowListActivity ||
                 context instanceof PartnerListActivity){
             progressDialog.setMessage(context.getText(R.string.pc_download_fav).toString());
@@ -272,14 +279,17 @@ public class ParseClient
                     if (favList.size() > 0){
                         for(ParseObject temp: favList){
                             HashMap<String, String> tempFav = new HashMap<String, String>();
+                            ParseGeoPoint tempGeo = (ParseGeoPoint) temp.get(context.getText(R.string.parse_key_latlng).toString());
 
                             tempFav.put(context.getText(R.string.parse_key_locName).toString()
                                     , (String)temp.get(context.getText(R.string.parse_key_locName).toString()));
 
+                            latLngs.add(new LatLng(tempGeo.getLatitude(), tempGeo.getLongitude()));
 
                             favs.add(tempFav);
                         }
                         Log.d("FAV : ", "fav added : " + favs.size());
+                        data.setPartnerLatLngList(latLngs);
 
                         if (context instanceof ShowListActivity){
 //                            ((PartnerListActivity) context).updateList(favs);

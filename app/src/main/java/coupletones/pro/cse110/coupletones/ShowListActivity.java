@@ -96,35 +96,6 @@ public class ShowListActivity extends AppCompatActivity
             });
         }
 
-//        if (listview != null) {
-//            listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//                @Override
-//                public void onItemClick(AdapterView<?> parent, final View view,
-//                                        int position, long id) {
-//                    indexOf = position;
-//                    LayoutInflater inflater = getLayoutInflater();
-//                    View dialoglayout = inflater.inflate(R.layout.layout_dialog_partner_location_settings,
-//                            null);
-//                    final AlertDialog.Builder builder = new AlertDialog.Builder(ShowListActivity.this);
-//                    builder.setCancelable(true);
-//                    builder.setView(dialoglayout);
-//                    builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            dialog.cancel();
-//                        }
-//                    });
-//
-//                    builder.show();
-//
-//                        //Get location clicked by using the position as index in ArrayList
-////                        indexOf = position;
-////                        DialogFragment dialog = new EditLocationDialog();
-////                        dialog.show(getFragmentManager(), getText(R.string.edit_location).toString());
-//
-//                    }
-//                });
-//            }
     }
 
     public void showOnMap(){
@@ -134,101 +105,7 @@ public class ShowListActivity extends AppCompatActivity
         startActivity(mapsIntent);
     }
 
-    public void chooseVibeNotification(View view){
-        LayoutInflater inflater = getLayoutInflater();
-        final View vibeToneLayout = inflater.inflate(R.layout.vibrate_notifications_list,
-                null);
-        radioGroup = (RadioGroup) vibeToneLayout.findViewById(R.id.vibe_list_radio_group);
-        final AlertDialog.Builder builder = new AlertDialog.Builder(ShowListActivity.this);
-        builder.setView(vibeToneLayout);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                //Save Vibe tone
-                int vibePatternIndex = radioGroup.indexOfChild(vibeToneLayout.findViewById(radioGroup.getCheckedRadioButtonId()));
 
-                //Add code to save chosen index
-
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-              @Override
-              public void onCheckedChanged(RadioGroup group, int checkedId) {
-                  // checkedId is the RadioButton selected
-                  Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                  int vibeIndex = radioGroup.indexOfChild(vibeToneLayout.findViewById(radioGroup.getCheckedRadioButtonId()));
-                  v.vibrate(vibeTones[vibeIndex], -1);
-              }
-        });
-        builder.show();
-    }
-
-    public void chooseAudibleNotification(View view){
-        LayoutInflater inflater = getLayoutInflater();
-        final View audibleToneLayout = inflater.inflate(R.layout.audible_notifications_list,
-                null);
-        radioGroup = (RadioGroup) audibleToneLayout.findViewById(R.id.audible_list_radio_group);
-        final AlertDialog.Builder builder = new AlertDialog.Builder(ShowListActivity.this);
-        builder.setView(audibleToneLayout);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                //Save Audible tone
-                int audiblePatternIndex = radioGroup.indexOfChild(audibleToneLayout.findViewById
-                        (radioGroup.getCheckedRadioButtonId()));
-
-                //Add code to save chosen index
-
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                // checkedId is the RadioButton selected
-                int audibleIndex = radioGroup.indexOfChild(audibleToneLayout.findViewById(radioGroup.getCheckedRadioButtonId()));
-                String audioPath = "android.resource://coupletones.pro.cse110.coupletones/" +
-                        audibleTones[audibleIndex];
-                RingtoneManager.getRingtone(getApplicationContext(), Uri.parse(audioPath)).play();
-            }
-        });
-        builder.show();
-    }
-
-    @Override
-    protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent)
-    {
-        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_PICK_TONE)
-        {
-            Uri uri = intent.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
-
-            if (uri != null)
-            {
-                chosenTone = uri.toString();
-                Log.d("TONE: ", this.chosenTone);
-
-            }
-            else
-            {
-                Uri defaultTone = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                chosenTone = defaultTone.toString();
-            }
-            parseClient.pushTone(chosenTone, latLngs.get(indexOf), isArrivalTone);
-        }
-    }
 
     /**
      * Save the edited name i shared preferences when "Save" is pressed
