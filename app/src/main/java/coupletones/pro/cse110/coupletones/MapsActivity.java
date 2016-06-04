@@ -235,6 +235,7 @@ public class MapsActivity extends FragmentActivity
     private void removeMarkerFromPref(Marker marker){
         latLngs.remove(marker.getPosition());
         locationNames.remove(marker.getTitle());
+        parseClient.removeFav(marker.getPosition(), marker.getTitle());
         saveMarkerPrefs();
     }
 
@@ -256,6 +257,7 @@ public class MapsActivity extends FragmentActivity
         int indexOf = locationNames.indexOf(marker.getTitle());
         locationNames.set(indexOf, newName);
         marker.setTitle(newName);
+        parseClient.changeFavName(marker.getPosition(), newName);
         saveMarkerPrefs();
     }
 

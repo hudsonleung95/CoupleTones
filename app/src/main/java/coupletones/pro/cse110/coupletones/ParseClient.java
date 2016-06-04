@@ -218,6 +218,8 @@ public class ParseClient
         query.whereEqualTo(context.getText(R.string.parse_key_userid).toString(),
                 data.getPartnerId());
 
+        query.whereGreaterThan(context.getText(R.string.parse_key_date).toString(), threeAM);
+
         query.findInBackground(new FindCallback<ParseObject>() {
             public void done(List<ParseObject> historyList, ParseException e) {
                 //close the progress dialog when done
@@ -436,6 +438,54 @@ public class ParseClient
                         Toast.makeText(context,
                                 context.getText(R.string.pc_empty_fav).toString(),
                                 Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
+    }
+
+    public void removeFav(LatLng latLng, String locName){
+        ParseQuery<ParseObject> query =
+                ParseQuery.getQuery(context.getText(R.string.parse_key_table_fav).toString());
+
+        query.whereEqualTo(context.getText(R.string.parse_key_userid).toString(),
+                data.getSelfId());
+        query.whereEqualTo(context.getText(R.string.parse_key_latlng).toString(),
+                new ParseGeoPoint(latLng.latitude, latLng.longitude));
+        query.whereEqualTo(context.getText(R.string.parse_key_locName).toString(),
+                locName);
+
+        query.findInBackground(new FindCallback<ParseObject>() {
+            public void done(List<ParseObject> favList, ParseException e) {
+
+                //if got a result
+                if (favList != null){
+                    if (favList.size() == 1 )
+                        favList.get(0).deleteInBackground();
+                }
+            }
+        });
+    }
+
+    public void changeFavName(LatLng latLng, final String newlocName){
+        ParseQuery query
+                = new ParseQuery(context.getText(R.string.parse_key_table_fav).toString());
+
+        query.whereEqualTo(context.getText(R.string.parse_key_userid).toString(),
+                data.getSelfId());
+        query.whereEqualTo(context.getText(R.string.parse_key_latlng).toString(),
+                new ParseGeoPoint(latLng.latitude, latLng.longitude));
+
+        query.findInBackground(new FindCallback<ParseObject>() {
+            public void done(List<ParseObject> matches, ParseException e) {
+
+                //if have result
+                if (matches != null) {
+                    if (matches.size() == 1) {
+                        ParseObject result = matches.get(0);
+                            result.put(context.getText(R.string.parse_key_locName).toString(),
+                                    newlocName);
+                        result.saveInBackground();
                     }
                 }
             }
