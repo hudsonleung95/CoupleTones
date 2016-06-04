@@ -46,12 +46,6 @@ public class PushNotificationReceiver extends ParsePushBroadcastReceiver{
             new ParseClient(context).pullToneIndex(latLng, isArrival);
 
 
-
-//            }
-//            else{
-//
-//            }
-
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -26,13 +26,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+//This class allows the users to view his/her partner's favorite location list
 public class PartnerListActivity extends AppCompatActivity
         implements EditLocationDialog.LocationDialogListener{
 
+    //Create several instance variables
     private DataStorage dataStorage;
     private List<LatLng> latLngs;
     private List<String> locationNames;
-//    private ArrayAdapter<String> adapter;
     private ListView listview;
     private int indexOf;
     private String chosenTone;
@@ -65,17 +66,20 @@ public class PartnerListActivity extends AppCompatActivity
 
         listview = (ListView) findViewById(R.id.partnerlistView);
 
-        //Initialize variables
+        //Initialize the datastorage and parseClient variables
         dataStorage = new DataStorage(this);
 
         parseClient = new ParseClient(this);
         parseClient.pullPartnerFav();
 
+        //pull our the partner's favorite locations from the client
+        //When user clicks the item in the list, a dialogue will pop up to set the tones
         if (listview != null) {
             listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, final View view,
                                         int position, long id) {
+                    //Set up onclick function.
                     indexOf = position;
                     LayoutInflater inflater = getLayoutInflater();
                     View dialoglayout = inflater.inflate(R.layout.layout_dialog_partner_location_settings,
@@ -104,6 +108,8 @@ public class PartnerListActivity extends AppCompatActivity
         startActivity(mapsIntent);
     }
 
+    //The method allows users to choose vibration patterns
+    //The user can choose several vibration patterns when the dialogue shows up
     public void chooseVibeNotification(View view){
         if (view.getId() == R.id.set_vibe_arrival_tone)
             isArrivalTone = true;
@@ -144,8 +150,8 @@ public class PartnerListActivity extends AppCompatActivity
             }
         });
         builder.show();
+        //show the buttons and choices
     }
-
 
 
     public void chooseAudibleNotification(View view){
@@ -209,7 +215,6 @@ public class PartnerListActivity extends AppCompatActivity
                 Uri defaultTone = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
                 chosenTone = defaultTone.toString();
             }
-//            parseClient.pushTone(chosenTone, latLngs.get(indexOf), isArrivalTone);
         }
     }
 
