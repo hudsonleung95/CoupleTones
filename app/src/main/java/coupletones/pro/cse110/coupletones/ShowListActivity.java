@@ -32,10 +32,10 @@ import java.util.List;
  * The ShowListActivity allows the user to see a list of the current saved locations when
  * the "Location Settings" is pressed
  */
-
 public class ShowListActivity extends AppCompatActivity
         implements EditLocationDialog.LocationDialogListener {
 
+    //initail several globel variables for use
     private DataStorage dataStorage;
     private List<LatLng> latLngs;
     private List<String> locationNames;
@@ -95,16 +95,19 @@ public class ShowListActivity extends AppCompatActivity
                 }
             });
         }
-
     }
 
+    /**
+     *
+     * The method allows the the map activity to run when clciking the items in the list
+     * return : void
+     */
     public void showOnMap(){
         Intent mapsIntent = new Intent(ShowListActivity.this, MapsActivity.class);
         mapsIntent.putExtra("LOC_CLICKED", locationNames.get(indexOf));
         mapsIntent.putExtra("SHOW_My_LOCS", true);
         startActivity(mapsIntent);
     }
-
 
 
     /**

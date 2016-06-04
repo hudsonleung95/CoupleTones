@@ -248,6 +248,7 @@ public class PartnerListActivity extends AppCompatActivity
         this.favs = favs;
         latLngs = dataStorage.getPartnerLatLngList();
         locationNames = dataStorage.getPartnerLocNameList();
+        //Get the partner's favorite locations
 
         if(favs.size() > 1){
             SimpleAdapter adapter = new SimpleAdapter(this, favs,
