@@ -58,11 +58,9 @@ public class AddActivity extends AppCompatActivity
         }
         else{
             if (dataStorage.getFirstTime()) {
-                startActivity(new Intent(AddActivity.this, WelcomeActivity.class));
                 dataStorage.setFirstTime(false);
-            } else {
-                startActivity(new Intent(AddActivity.this, HistoryActivity.class));
             }
+            startActivity(new Intent(AddActivity.this, HistoryActivity.class));
         }
     }
 
@@ -128,5 +126,13 @@ public class AddActivity extends AppCompatActivity
 
     public DataStorage getDS() {
         return this.dataStorage;
+    }
+
+    public void setSelfId(String selfId) {
+        et_self_id.setText(selfId);
+    }
+
+    public void setPartnerId(String partnerId) {
+        et_input_id.setText(partnerId);
     }
 }

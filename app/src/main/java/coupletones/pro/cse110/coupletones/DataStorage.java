@@ -2,6 +2,7 @@ package coupletones.pro.cse110.coupletones;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
@@ -133,8 +134,10 @@ public class DataStorage
         String favLatLngFromJson = locations.getString(
                 context.getText(R.string.sp_key_list_partner_locname).toString(),
                 null);
+        Log.d("test_viewPartnerHistory", "WTFFFFF");
         if(favLatLngFromJson != null){
             String[] favLocNames = new Gson().fromJson(favLatLngFromJson, String[].class);
+            Log.d("test_viewPartnerHistory", "IngetPartnerLocNameList");
             return new ArrayList<String>(Arrays.asList(favLocNames));
         }
 
