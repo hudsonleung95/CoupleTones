@@ -2,26 +2,14 @@
  * Test file for adding, customizing, and deleting locations
  */
 
-package tests;
+package coupletones.pro.cse110.coupletones.tests;
 
-import android.os.Handler;
-import android.os.Looper;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.gson.Gson;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import coupletones.pro.cse110.coupletones.MapsActivity;
-import coupletones.pro.cse110.coupletones.DataStorage;
-import coupletones.pro.cse110.coupletones.cLocation;
 
 /**
  * Created by Andy on 5/7/16.

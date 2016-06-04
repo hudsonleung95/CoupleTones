@@ -44,7 +44,9 @@ public class ParseClient
         //Get data from shared preferences
         data = new DataStorage(context);
 
-        progressDialog = new ProgressDialog(context);
+        if (context instanceof HistoryActivity ||
+                context instanceof PartnerListActivity)
+            progressDialog = new ProgressDialog(context);
 
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, 0);

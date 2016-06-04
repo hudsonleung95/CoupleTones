@@ -17,6 +17,7 @@ public class PushNotificationReceiver extends ParsePushBroadcastReceiver{
     private static int audIdx;
     private static int vibeIdx;
     private static Context context;
+    private static boolean isArrival;
     static long [] vibe1 = {0, 500, 200, 500}; //two long vibrates
     static long [] vibe2 = {0, 250, 100, 250}; //two short vibrates
     static long [] vibe3 = {0, 350, 400, 350}; //two medium vibrates
@@ -40,7 +41,7 @@ public class PushNotificationReceiver extends ParsePushBroadcastReceiver{
         //Send second notification with customized sound and vibration
         try {
             JSONObject data = new JSONObject(intent.getExtras().getString("com.parse.Data"));
-            boolean isArrival = data.getBoolean("isArrival");
+            isArrival = data.getBoolean("isArrival");
             LatLng latLng = new LatLng(data.getDouble("loc_lat"), data.getDouble("loc_lng"));
 
             new ParseClient(context).pullToneIndex(latLng, isArrival);
@@ -62,8 +63,12 @@ public class PushNotificationReceiver extends ParsePushBroadcastReceiver{
         Notification notification = super.getNotification(context, intent);
 
         //Set default notification sound when received
-        notification.sound = Uri.parse("android.resource://" + context.getPackageName() +
-                "/notification_sound.mp3");
+        if(isArrival)
+            notification.sound = Uri.parse("android.resource://coupletones.pro.cse110.coupletones/" +
+                R.raw.notification_sound);
+        else //departure
+            notification.sound = Uri.parse("android.resource://coupletones.pro.cse110.coupletones/" +
+                    R.raw.furrow);
 
         return notification;
     }
