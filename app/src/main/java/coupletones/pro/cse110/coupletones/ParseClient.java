@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.util.Log;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -18,7 +16,6 @@ import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 import com.parse.ParsePush;
 import com.parse.ParseQuery;
-import com.parse.ParseUser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -258,6 +255,7 @@ public class ParseClient
     public void pullPartnerFav(){
         final ArrayList<HashMap<String, String>> favs = new ArrayList<>();
         final ArrayList<LatLng> latLngs = new ArrayList<>();
+        final ArrayList<String> locNames = new ArrayList<>();
         if(context instanceof ShowListActivity ||
                 context instanceof PartnerListActivity){
             progressDialog.setMessage(context.getText(R.string.pc_download_fav).toString());
@@ -288,11 +286,13 @@ public class ParseClient
                                     , (String)temp.get(context.getText(R.string.parse_key_locName).toString()));
 
                             latLngs.add(new LatLng(tempGeo.getLatitude(), tempGeo.getLongitude()));
+                            locNames.add((String)temp.get(context.getText(R.string.parse_key_locName).toString()));
 
                             favs.add(tempFav);
                         }
                         Log.d("FAV : ", "fav added : " + favs.size());
                         data.setPartnerLatLngList(latLngs);
+                        data.setPartnerLocNameList(locNames);
 
                         if (context instanceof ShowListActivity){
 //                            ((PartnerListActivity) context).updateList(favs);

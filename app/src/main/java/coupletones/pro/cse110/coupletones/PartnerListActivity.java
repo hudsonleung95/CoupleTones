@@ -9,17 +9,12 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.SimpleAdapter;
@@ -28,7 +23,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -248,6 +242,7 @@ public class PartnerListActivity extends AppCompatActivity
 
         this.favs = favs;
         latLngs = dataStorage.getPartnerLatLngList();
+        locationNames = dataStorage.getPartnerLocNameList();
 
         if(favs.size() > 1){
             SimpleAdapter adapter = new SimpleAdapter(this, favs,

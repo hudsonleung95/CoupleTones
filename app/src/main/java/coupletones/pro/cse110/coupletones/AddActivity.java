@@ -6,14 +6,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.parse.ParseUser;
 import com.parse.ui.ParseLoginBuilder;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * The AddActivity allows user to add a partner's RegID to pair.
@@ -29,6 +25,7 @@ public class AddActivity extends AppCompatActivity
     private DataStorage dataStorage;
     private ParseClient parseClient;
     private ParseUser currentUser;
+    private boolean changePartner;
 
 
     @Override
@@ -36,32 +33,8 @@ public class AddActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
-        /*ParseLoginBuilder builder = new ParseLoginBuilder(AddActivity.this);
-        startActivityForResult(builder.build(), 0);*/
-
         setContentView(R.layout.layout_add);
         init();
-        Bundle extras = getIntent().getExtras();
-        currentUser = ParseUser.getCurrentUser();
-
-        if (dataStorage.getSelfId() == null || currentUser == null) {
-            ParseLoginBuilder loginBuilder = new ParseLoginBuilder(
-                    AddActivity.this);
-            startActivityForResult(loginBuilder.build(), LOGIN_REQUEST);
-//            startActivity(new Intent(AddActivity.this, HistoryActivity.class));
-        }
-
-
-        if(extras != null && extras.getBoolean("CHANGE_PARTNER")) {
-            TextView title = (TextView) findViewById(R.id.add_tv_logo);
-            title.setText("Change Your Partner");
-        }
-        else{
-            if (dataStorage.getFirstTime()) {
-                dataStorage.setFirstTime(false);
-            }
-            startActivity(new Intent(AddActivity.this, HistoryActivity.class));
-        }
     }
 
 
@@ -69,17 +42,43 @@ public class AddActivity extends AppCompatActivity
     protected void onStart() {
         super.onStart();
 
-        currentUser = ParseUser.getCurrentUser();
+    }
 
-        if(currentUser == null) {
-            ParseLoginBuilder loginBuilder = new ParseLoginBuilder(
-                    AddActivity.this);
-            startActivityForResult(loginBuilder.build(), LOGIN_REQUEST);
+    @Override
+    protected void onResume(){
+        super.onResume();
+        checkLoginStatus();
+
+        if (dataStorage.getSelfId() == null && ParseUser.getCurrentUser() != null) {
+            parseClient.saveUserId(ParseUser.getCurrentUser().getUsername());
+            dataStorage.setSelfId(ParseUser.getCurrentUser().getUsername());
         }
 
-        if (dataStorage.getSelfId() == null && currentUser != null) {
-            parseClient.saveUserId(currentUser.getUsername());
-            dataStorage.setSelfId(currentUser.getUsername());
+
+
+
+        Bundle extras = getIntent().getExtras();
+        currentUser = ParseUser.getCurrentUser();
+
+
+        if(extras != null && extras.getBoolean("CHANGE_PARTNER")) {
+            TextView title = (TextView) findViewById(R.id.add_tv_logo);
+            title.setText("Change Your Partner");
+            changePartner = true;
+        }
+
+        else{
+            if (dataStorage.getFirstTime()) {
+                dataStorage.setFirstTime(false);
+            }
+        }
+
+        if (dataStorage.getSelfId() != null)
+            et_self_id.setText(dataStorage.getSelfId());
+
+        //already login AND already added a partner AND not wanting to change partner
+        if(dataStorage.getSelfId() != null && dataStorage.getPartnerId() != null && !changePartner){
+            startActivity(new Intent(this, HistoryActivity.class));
         }
     }
 
@@ -89,13 +88,13 @@ public class AddActivity extends AppCompatActivity
      * Initialize the data
      */
     private void init(){
+        changePartner = false;
         et_self_id = (EditText)findViewById(R.id.add_et_selfid);
         et_input_id = (EditText)findViewById(R.id.add_et_input);
         dataStorage = new DataStorage(this);
         parseClient = new ParseClient(this);
 //        et_self_id.setText(dataStorage.getSelfId());
-        if (dataStorage.getSelfId() != null)
-            et_self_id.setText(dataStorage.getSelfId());
+
 //        Log.d("PARSE ID : ", dataStorage.getSelfId());
 
         if(dataStorage.getPartnerId() != null)
@@ -134,5 +133,14 @@ public class AddActivity extends AppCompatActivity
 
     public void setPartnerId(String partnerId) {
         et_input_id.setText(partnerId);
+    }
+
+    private void checkLoginStatus(){
+//        Log.d("MY ID :", ParseUser.getCurrentUser().toString());
+        if (dataStorage.getSelfId() == null && ParseUser.getCurrentUser()== null) {
+            ParseLoginBuilder loginBuilder = new ParseLoginBuilder(
+                    AddActivity.this);
+            startActivityForResult(loginBuilder.build(), LOGIN_REQUEST);
+        }
     }
 }

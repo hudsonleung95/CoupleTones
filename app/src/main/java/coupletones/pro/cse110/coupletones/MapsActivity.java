@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -20,7 +19,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.appindexing.Action;
@@ -43,8 +41,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -85,7 +81,7 @@ public class MapsActivity extends FragmentActivity
         super.onCreate(savedInstanceState);
 
         Bundle extras = getIntent().getExtras();
-        TextView title = (TextView) findViewById(R.id.maps_title);
+//        TextView title = (TextView) findViewById(R.id.maps_title);
 
         partnerLocs = false;
         showMyLoc = false;
@@ -101,7 +97,7 @@ public class MapsActivity extends FragmentActivity
             else {
                 setContentView(R.layout.layout_partner_maps);
                 partnerLocs = extras.getBoolean("SHOW_PARTNER_LOCS");
-                title.setText("Your Partner's Favorite Locations");
+//                title.setText("Your Partner's Favorite Locations");
             }
             locClicked = extras.getString("LOC_CLICKED");
         }
@@ -267,32 +263,40 @@ public class MapsActivity extends FragmentActivity
      * The method will load all the markers from shared preferences and display them on the map
      */
     private void loadMarkers(){
-        String favLatLngFromJson = dataStorage.getLatLngList();
-        String favNamesFromJson = dataStorage.getLocNameList();
+        if (partnerLocs){
+            latLngs = dataStorage.getPartnerLatLngList();
+            locationNames = dataStorage.getPartnerLocNameList();
+        }else{
+            String favLatLngFromJson = dataStorage.getLatLngList();
+            String favNamesFromJson = dataStorage.getLocNameList();
 
-        if(favNamesFromJson != null && favLatLngFromJson != null){
-            String[] favNames = new Gson().fromJson(favNamesFromJson, String[].class);
-            LatLng[] favLatLng = new Gson().fromJson(favLatLngFromJson, LatLng[].class);
+            if(favNamesFromJson != null && favLatLngFromJson != null){
+                String[] favNames = new Gson().fromJson(favNamesFromJson, String[].class);
+                LatLng[] favLatLng = new Gson().fromJson(favLatLngFromJson, LatLng[].class);
 
-            //Convert json to the actual ArrayLists
-            latLngs = Arrays.asList(favLatLng);
-            latLngs = new ArrayList<LatLng>(latLngs);
-            locationNames = Arrays.asList(favNames);
-            locationNames = new ArrayList<String>(locationNames);
+                //Convert json to the actual ArrayLists
+                latLngs = Arrays.asList(favLatLng);
+                latLngs = new ArrayList<LatLng>(latLngs);
+                locationNames = Arrays.asList(favNames);
+                locationNames = new ArrayList<String>(locationNames);
+            }
+        }
 
-            //Add the markers back onto the map
-            for (int i = 0; i < latLngs.size(); i++) {
-                LatLng point = latLngs.get(i);
-                String name = locationNames.get(i);
-                Marker addedMarker = mMap.addMarker(new MarkerOptions().position(new LatLng
-                        (point.latitude, point.longitude)).title(name));
-                if(partnerLocs){
-                    addedMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-                }
 
-                if(name.equals(locClicked)){
-                    markerClicked = addedMarker;
-                }
+
+
+        //Add the markers back onto the map
+        for (int i = 0; i < latLngs.size(); i++) {
+            LatLng point = latLngs.get(i);
+            String name = locationNames.get(i);
+            Marker addedMarker = mMap.addMarker(new MarkerOptions().position(new LatLng
+                    (point.latitude, point.longitude)).title(name));
+            if(partnerLocs){
+                addedMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+            }
+
+            if(name.equals(locClicked)){
+                markerClicked = addedMarker;
             }
         }
     }

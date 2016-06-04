@@ -23,7 +23,7 @@
                 android:id="@+id/maps_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Your Favorite Locations"
+                android:text="Your Partner's Favorite Locations"
                 android:textColor="#000"
                 android:gravity="center"
                 android:textSize="24sp" />
