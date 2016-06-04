@@ -1,6 +1,8 @@
 package coupletones.pro.cse110.coupletones.tests;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Handler;
 import android.support.test.espresso.UiController;
 import android.support.test.espresso.ViewAction;
 import android.support.test.espresso.intent.Intents;
@@ -11,11 +13,14 @@ import android.support.v4.widget.DrawerLayout;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.view.View;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import org.hamcrest.Matcher;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import coupletones.pro.cse110.coupletones.AddActivity;
 import coupletones.pro.cse110.coupletones.HistoryActivity;
 import coupletones.pro.cse110.coupletones.ParseClient;
 import coupletones.pro.cse110.coupletones.PartnerListActivity;
@@ -24,6 +29,8 @@ import coupletones.pro.cse110.coupletones.R;
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
+
+import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
@@ -53,11 +60,21 @@ public class ArrivalDepartureTest {
     // Tests that HistoryActivity launches upon opening after partner is added
     public void testLaunchHistoryActivity() {
 
-        // ActivityTestRule<HistoryActivity> hActivityRule
-        //         = new ActivityTestRule<>(HistoryActivity.class);
+       // ActivityTestRule<HistoryActivity> hActivityRule
+       //         = new ActivityTestRule<>(HistoryActivity.class);
 
         // logs which Intents have fired
         Intents.init();
+        // open drawer
+        onView(withId(R.id.drawer_settings_layout)).perform(actionOpenDrawer());
+
+
+        // select partner settings
+        onView(withText("Partner Settings")).perform(click());
+
+        // replace partner ID
+        onView(withId(R.id.add_et_input)).perform(replaceText("test1@test.com"));
+        onView(withId(R.id.add_btn_chkid)).perform(click());
 
         // open drawer
         onView(withId(R.id.drawer_settings_layout)).perform(actionOpenDrawer());
@@ -66,7 +83,7 @@ public class ArrivalDepartureTest {
         onView(withText("Partner's Fav Loc List")).perform(click());
 
         // checks that PartnerListActivity is opened
-        intended(hasComponent(PartnerListActivity.class.getName()));
+        intended(hasComponent(AddActivity.class.getName()));
 
         // click list item
         onData(anything()).inAdapterView(withId(R.id.partnerlistView)).atPosition(0).perform(click());

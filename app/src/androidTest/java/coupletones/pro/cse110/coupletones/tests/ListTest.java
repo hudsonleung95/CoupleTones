@@ -1,31 +1,44 @@
 package coupletones.pro.cse110.coupletones.tests;
 
+import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.support.test.espresso.UiController;
 import android.support.test.espresso.ViewAction;
+import android.support.test.espresso.action.ViewActions;
 import android.support.test.espresso.intent.Intents;
 import android.support.test.rule.ActivityTestRule;
+import android.support.test.runner.AndroidJUnit4;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.test.suitebuilder.annotation.LargeTest;
 import android.view.View;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import org.hamcrest.Matcher;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import coupletones.pro.cse110.coupletones.AddActivity;
 import coupletones.pro.cse110.coupletones.HistoryActivity;
+import coupletones.pro.cse110.coupletones.ParseClient;
+import coupletones.pro.cse110.coupletones.PartnerListActivity;
 import coupletones.pro.cse110.coupletones.R;
 
+import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.clearText;
 import static android.support.test.espresso.action.ViewActions.click;
+
 import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.CoreMatchers.anything;
 /**
  * Created by Koji Kameda on 6/3/2016.
  */
@@ -40,6 +53,17 @@ public class ListTest {
     // Scenario 1: Given that the user has added a partner,
     // and the partner visits/has visited one or more favorite locations
     public void testLaunchHistoryActivity() {
+
+        // open drawer
+        onView(withId(R.id.drawer_settings_layout)).perform(actionOpenDrawer());
+
+
+        // select partner settings
+        onView(withText("Partner Settings")).perform(click());
+
+        // replace partner ID
+        onView(withId(R.id.add_et_input)).perform(replaceText("test1@test.com"));
+        onView(withId(R.id.add_btn_chkid)).perform(click());
 
         // logs which Intents have fired
         Intents.init();
