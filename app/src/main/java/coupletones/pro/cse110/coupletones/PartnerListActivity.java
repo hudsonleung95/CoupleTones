@@ -94,6 +94,7 @@ public class PartnerListActivity extends AppCompatActivity
                         }
                     });
 
+                    //Show the dialog for setting the tones and vibrations
                     builder.show();
 
                 }
@@ -154,6 +155,10 @@ public class PartnerListActivity extends AppCompatActivity
     }
 
 
+    /**
+     * The method allows the user to choose the tones for the notification
+     * @param view
+     */
     public void chooseAudibleNotification(View view){
         if (view.getId() == R.id.set_audible_arrival_tone)
             isArrivalTone = true;
@@ -197,6 +202,11 @@ public class PartnerListActivity extends AppCompatActivity
         builder.show();
     }
 
+    /**
+     * @param requestCode
+     * @param resultCode
+     * @param intent
+     */
     @Override
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent)
     {
