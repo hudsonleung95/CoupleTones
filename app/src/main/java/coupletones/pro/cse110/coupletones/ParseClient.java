@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.gson.Gson;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
@@ -297,7 +298,7 @@ public class ParseClient
                         data.setPartnerLocNameList(locNames);
 
                         if (context instanceof ShowListActivity){
-//                            ((PartnerListActivity) context).updateList(favs);
+                            ((ShowListActivity) context).updateList(favs);
                         }else if (context instanceof PartnerListActivity)
                             ((PartnerListActivity) context).updateList(favs);
 
@@ -306,6 +307,64 @@ public class ParseClient
                         Toast.makeText(context,
                                 context.getText(R.string.pc_empty_fav).toString(),
                                 Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
+    }
+
+    public void pullSelfFav(){
+        final ArrayList<HashMap<String, String>> favs = new ArrayList<>();
+        final ArrayList<LatLng> latLngs = new ArrayList<>();
+        final ArrayList<String> locNames = new ArrayList<>();
+        if(context instanceof ShowListActivity ||
+                context instanceof PartnerListActivity){
+            progressDialog.setMessage(context.getText(R.string.pc_download_fav).toString());
+            progressDialog.show();
+        }
+
+        ParseQuery<ParseObject> query =
+                ParseQuery.getQuery(context.getText(R.string.parse_key_table_fav).toString());
+
+        query.whereEqualTo(context.getText(R.string.parse_key_userid).toString(),
+                data.getSelfId());
+
+        query.findInBackground(new FindCallback<ParseObject>() {
+            public void done(List<ParseObject> favList, ParseException e) {
+                //close the progress dialog when done
+                if (progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
+
+                //if have visited any of the fav
+                if (favList != null){
+                    if (favList.size() > 0){
+                        for(ParseObject temp: favList){
+                            HashMap<String, String> tempFav = new HashMap<String, String>();
+                            ParseGeoPoint tempGeo = (ParseGeoPoint) temp.get(context.getText(R.string.parse_key_latlng).toString());
+
+                            tempFav.put(context.getText(R.string.parse_key_locName).toString()
+                                    , (String)temp.get(context.getText(R.string.parse_key_locName).toString()));
+
+                            latLngs.add(new LatLng(tempGeo.getLatitude(), tempGeo.getLongitude()));
+                            locNames.add((String)temp.get(context.getText(R.string.parse_key_locName).toString()));
+
+                            favs.add(tempFav);
+                        }
+                        Log.d("FAV : ", "fav added : " + favs.size());
+                        data.setLatLngList(new Gson().toJson(latLngs));
+                        data.setLocNameList(new Gson().toJson(locNames));
+
+                        if (context instanceof ShowListActivity){
+                            ((ShowListActivity) context).updateList(favs);
+                        }else if (context instanceof PartnerListActivity)
+                            ((PartnerListActivity) context).updateList(favs);
+
+                    }else{
+                        //Display a toast if invalid id
+                        Toast.makeText(context,
+                                "You have not added any favorites",
+                                Toast.LENGTH_SHORT).show() ;
                     }
                 }
             }

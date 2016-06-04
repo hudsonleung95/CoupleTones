@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import com.parse.ParseUser;
 
+//The class to allow user to logout the app
 public class Logout extends AppCompatActivity {
 
     private TextView title;
@@ -19,10 +20,12 @@ public class Logout extends AppCompatActivity {
     private Button logOut;
 
     private ParseUser currentUser;
+    //create several instance variables
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //set up
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_logout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -36,6 +39,7 @@ public class Logout extends AppCompatActivity {
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
 
+        //If user click on the logout button
         logOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -44,9 +48,10 @@ public class Logout extends AppCompatActivity {
                     currentUser = null;
                     new DataStorage(getApplicationContext()).setSelfId(null);
                     new ParseClient(getApplicationContext()).saveUserId("");
-
+            //update the datastorage and the parseclient to null
 
                     startActivity(new Intent(Logout.this, AddActivity.class));
+                    //start the logout activity
                 }
             }
         });
@@ -58,6 +63,7 @@ public class Logout extends AppCompatActivity {
         currentUser = ParseUser.getCurrentUser();
         email.setText(currentUser.getEmail());
         String fullName = currentUser.getString("name");
+        //After getting the email and user name, performing log out
         if(fullName != null) {
             name.setText(fullName);
         }
