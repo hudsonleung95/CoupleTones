@@ -134,10 +134,33 @@ public class DataStorage
         String favLatLngFromJson = locations.getString(
                 context.getText(R.string.sp_key_list_partner_locname).toString(),
                 null);
-        Log.d("test_viewPartnerHistory", "WTFFFFF");
         if(favLatLngFromJson != null){
             String[] favLocNames = new Gson().fromJson(favLatLngFromJson, String[].class);
             Log.d("test_viewPartnerHistory", "IngetPartnerLocNameList");
+            return new ArrayList<String>(Arrays.asList(favLocNames));
+        }
+
+        return null;
+    }
+
+    public ArrayList<LatLng> getSelfLatLngList(){
+        String favLatLngFromJson = locations.getString(
+                context.getText(R.string.sp_key_list_latlng).toString(),
+                null);
+        if(favLatLngFromJson != null){
+            LatLng[] favLatLng = new Gson().fromJson(favLatLngFromJson, LatLng[].class);
+            return new ArrayList<LatLng>(Arrays.asList(favLatLng));
+        }
+
+        return null;
+    }
+
+    public ArrayList<String> getSelfLocNameList(){
+        String favLatLngFromJson = locations.getString(
+                context.getText(R.string.sp_key_list_locname).toString(),
+                null);
+        if(favLatLngFromJson != null){
+            String[] favLocNames = new Gson().fromJson(favLatLngFromJson, String[].class);
             return new ArrayList<String>(Arrays.asList(favLocNames));
         }
 

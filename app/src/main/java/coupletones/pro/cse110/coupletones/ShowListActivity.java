@@ -19,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RadioGroup;
+import android.widget.SimpleAdapter;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
@@ -45,6 +46,8 @@ public class ShowListActivity extends AppCompatActivity
     private String chosenTone;
     private static final int REQUEST_PICK_TONE = 1;
     RadioGroup radioGroup;
+    private ArrayList<HashMap<String, String>> favs;
+
 
     //Custom vibration patterns, starts with delay (0) then alternates between vibrate and sleep
     //in milliseconds
@@ -77,9 +80,9 @@ public class ShowListActivity extends AppCompatActivity
         latLngs = new ArrayList<LatLng>();
         locationNames = new ArrayList<String>();
         parseClient = new ParseClient(this);
-       // parseClient.pullPartnerFav();
+        parseClient.pullSelfFav();
 
-        updateList();
+//        updateList();
 
         if (listview != null) {
             listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -120,7 +123,8 @@ public class ShowListActivity extends AppCompatActivity
             locationNames.set(indexOf, loc_name);
             String namesList = new Gson().toJson(locationNames);
             dataStorage.setLocNameList(namesList);
-            updateList();
+//            updateList();
+            parseClient.pullSelfFav();
         }
     }
 
@@ -129,32 +133,52 @@ public class ShowListActivity extends AppCompatActivity
         //Dont do anything when cancel is pressed
     }
 
+//    /**
+//     * Get the current saved locations from shared preferences and display on the list
+//     */
+//    private void updateList(){
+//
+//        //Get the current saved locations from Shared Preferences
+//        String favLatLngFromJson = dataStorage.getLatLngList();
+//        String favNamesFromJson = dataStorage.getLocNameList();
+//
+//        if(favNamesFromJson != null && favLatLngFromJson != null) {
+//            String[] favNames = new Gson().fromJson(favNamesFromJson, String[].class);
+//            LatLng[] favLatLng = new Gson().fromJson(favLatLngFromJson, LatLng[].class);
+//
+//            //Convert from json to the actual ArrayLists
+//            latLngs = Arrays.asList(favLatLng);
+//            latLngs = new ArrayList<LatLng>(latLngs);
+//            locationNames = Arrays.asList(favNames);
+//            locationNames = new ArrayList<String>(locationNames);
+//
+//            adapter = new ArrayAdapter(this,
+//                    R.layout.list_item_mylocation,
+//                    R.id.list_item_mylocation_textview, locationNames);
+//
+//            if (listview != null) {
+//                listview.setAdapter(adapter);
+//            }
+//        }
+//    }
+
     /**
      * Get the current saved locations from shared preferences and display on the list
      */
-    private void updateList(){
+    public void updateList(ArrayList<HashMap<String, String>> favs){
 
-        //Get the current saved locations from Shared Preferences
-        String favLatLngFromJson = dataStorage.getLatLngList();
-        String favNamesFromJson = dataStorage.getLocNameList();
+        this.favs = favs;
+        latLngs = dataStorage.getSelfLatLngList();
+        locationNames = dataStorage.getSelfLocNameList();
 
-        if(favNamesFromJson != null && favLatLngFromJson != null) {
-            String[] favNames = new Gson().fromJson(favNamesFromJson, String[].class);
-            LatLng[] favLatLng = new Gson().fromJson(favLatLngFromJson, LatLng[].class);
+        if(favs.size() > 1){
+            SimpleAdapter adapter = new SimpleAdapter(this, favs,
+                    android.R.layout.simple_list_item_2,
+                    new String[] {getText(R.string.parse_key_locName).toString()},
+                    //, getText(R.string.parse_key_date).toString()},
+                    new int[] {android.R.id.text1});
 
-            //Convert from json to the actual ArrayLists
-            latLngs = Arrays.asList(favLatLng);
-            latLngs = new ArrayList<LatLng>(latLngs);
-            locationNames = Arrays.asList(favNames);
-            locationNames = new ArrayList<String>(locationNames);
-
-            adapter = new ArrayAdapter(this,
-                    R.layout.list_item_mylocation,
-                    R.id.list_item_mylocation_textview, locationNames);
-
-            if (listview != null) {
-                listview.setAdapter(adapter);
-            }
+            listview.setAdapter(adapter);
         }
     }
 }
