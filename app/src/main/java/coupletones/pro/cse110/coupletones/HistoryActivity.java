@@ -175,7 +175,7 @@ public class HistoryActivity extends AppCompatActivity
     public void updateList(ArrayList<HashMap<String, String>> history){
         this.history = history;
 
-        if(history.size() > 1){
+        if(history.size() > 0){
             SimpleAdapter adapter = new SimpleAdapter(this, history,
                     android.R.layout.simple_list_item_2,
                     new String[] {getText(R.string.parse_key_locName).toString()
