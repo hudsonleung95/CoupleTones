@@ -46,7 +46,9 @@ public class ParseClient
         data = new DataStorage(context);
 
         if (context instanceof HistoryActivity ||
-                context instanceof PartnerListActivity)
+                context instanceof PartnerListActivity ||
+                context instanceof AddActivity ||
+                context instanceof ShowListActivity)
             progressDialog = new ProgressDialog(context);
 
         Calendar cal = Calendar.getInstance();
