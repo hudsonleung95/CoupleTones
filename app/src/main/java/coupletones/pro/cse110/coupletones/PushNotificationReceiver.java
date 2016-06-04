@@ -13,6 +13,9 @@ import com.parse.ParsePushBroadcastReceiver;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * The class to receive the notification and build the connection within server
+ */
 public class PushNotificationReceiver extends ParsePushBroadcastReceiver{
     private static int audIdx;
     private static int vibeIdx;
@@ -31,6 +34,11 @@ public class PushNotificationReceiver extends ParsePushBroadcastReceiver{
     static int [] audibleTones = {R.raw.coins, R.raw.spring, R.raw.gentle_alarm, R.raw.tweet, R.raw.ache,
             R.raw.chirp, R.raw.croak, R.raw.suppressed, R.raw.pedantic, R.raw.inquisitiveness};
 
+    /**
+     * Set the push recerive
+     * @param context
+     * @param intent
+     */
     @Override
     protected void onPushReceive(Context context, Intent intent) {
         //Send first notification with message and CoupleTones default sound
@@ -46,17 +54,17 @@ public class PushNotificationReceiver extends ParsePushBroadcastReceiver{
             new ParseClient(context).pullToneIndex(latLng, isArrival);
 
 
-
-//            }
-//            else{
-//
-//            }
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * Get the notification
+     * @param context
+     * @param intent
+     * @return
+     */
     @Override
     protected Notification getNotification(Context context, Intent intent) {
         Notification notification = super.getNotification(context, intent);
@@ -68,6 +76,10 @@ public class PushNotificationReceiver extends ParsePushBroadcastReceiver{
         return notification;
     }
 
+    /**
+     * Save the tones
+     * @param tones
+     */
     public static void saveTones(int[] tones){
         audIdx = 0;
         vibeIdx = 0;
@@ -78,18 +90,19 @@ public class PushNotificationReceiver extends ParsePushBroadcastReceiver{
         showNotification();
     }
 
+    /**
+     * Show the notification to the user
+     * return : void
+     */
     private static void showNotification(){
         final NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         final Notification notification = new Notification();
 
-//            if(isArrival){
-
         //Change later to actual customized settings
         notification.vibrate = vibeTones[vibeIdx];
         notification.sound = Uri.parse("android.resource://coupletones.pro.cse110.coupletones/" +
                 audibleTones[audIdx]);
-//        notification.defaults |= Notification.DEFAULT_SOUND;
 
         //Send customized tones 2 seconds after first tone is played
         final Handler handler = new Handler();
