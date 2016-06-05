@@ -37,7 +37,7 @@ public class ParseClient
     private DataStorage data;
     private Context context;
     private ProgressDialog progressDialog;
-    private Date threeAM;
+    private Date midnight;
 
     public ParseClient(Context context){
         this.context = context;
@@ -55,7 +55,7 @@ public class ParseClient
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
-        threeAM = cal.getTime();
+        midnight = cal.getTime();
     }
 
     /**
@@ -218,7 +218,7 @@ public class ParseClient
         query.whereEqualTo(context.getText(R.string.parse_key_userid).toString(),
                 data.getPartnerId());
 
-        query.whereGreaterThan(context.getText(R.string.parse_key_date).toString(), threeAM);
+        query.whereGreaterThan(context.getText(R.string.parse_key_date).toString(), midnight);
 
         query.findInBackground(new FindCallback<ParseObject>() {
             public void done(List<ParseObject> historyList, ParseException e) {

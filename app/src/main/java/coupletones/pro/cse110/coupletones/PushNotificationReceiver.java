@@ -4,8 +4,11 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Handler;
+import android.os.Vibrator;
+import android.support.v4.app.NotificationCompat;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.parse.ParsePushBroadcastReceiver;
@@ -69,7 +72,10 @@ public class PushNotificationReceiver extends ParsePushBroadcastReceiver{
     @Override
     protected Notification getNotification(Context context, Intent intent) {
         Notification notification = super.getNotification(context, intent);
-
+//        notification.defaults &= ~(1 << Notification.DEFAULT_SOUND);
+//        notification.defaults &= ~(1 << Notification.DEFAULT_VIBRATE);
+        notification.defaults = 0;
+//        notification.icon = R.drawable.ic_people_outline_black_24dp;
         //Set default notification sound when received
         if(isArrival)
             notification.sound = Uri.parse("android.resource://coupletones.pro.cse110.coupletones/" +
@@ -100,22 +106,10 @@ public class PushNotificationReceiver extends ParsePushBroadcastReceiver{
      * return : void
      */
     private static void showNotification(){
-        final NotificationManager notificationManager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        final Notification notification = new Notification();
-
-        //Change later to actual customized settings
-        notification.vibrate = vibeTones[vibeIdx];
-        notification.sound = Uri.parse("android.resource://coupletones.pro.cse110.coupletones/" +
-                audibleTones[audIdx]);
-
-        //Send customized tones 2 seconds after first tone is played
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                notificationManager.notify(0, notification);
-            }
-        }, 2000);
+        MediaPlayer mp = MediaPlayer.create(context, audibleTones[audIdx]);
+        Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+        mp.start();
+        // Vibrate for 500 milliseconds
+        v.vibrate(vibeTones[vibeIdx], -1);
     }
 }
