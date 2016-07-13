@@ -49,6 +49,7 @@ public class CurrentLocationTracker extends Service implements LocationListener{
     private HashMap<String, Long> timeLastDepart;
     private String locLastVisited;
     private String locToSendNotification;
+    private boolean departureSent;
 
     // The minimum distance to change Updates in meters
     private static final long DIST_BTWN_UPDATES = 10; // 10 meters
@@ -58,6 +59,7 @@ public class CurrentLocationTracker extends Service implements LocationListener{
 
     private static final int LOC_RADIUS = 161; // 161 meters (0.1 miles)
 
+    //    private static final int TIME_BTWN_SAME_LOC = 1000; //30 minutes
     private static final int TIME_BTWN_SAME_LOC = 1800000; //30 minutes
 
     // Declaring a Location Manager
@@ -79,6 +81,7 @@ public class CurrentLocationTracker extends Service implements LocationListener{
         timesLastVisited = new HashMap<String, Long>();
         timeLastDepart = new HashMap<String, Long>();
         parseClient = new ParseClient(this);
+        departureSent = false;
     }
 
     @Override
@@ -92,6 +95,13 @@ public class CurrentLocationTracker extends Service implements LocationListener{
         getLongitude();
         if (isAtLoc()) {
             sendNotification();
+        }
+
+        if (lastVisited != null){
+            //if not within last fav = departed
+            if(!isWithinFavLoc(lastVisited)){
+                sendDepartNoti();
+            }
         }
         return Service.START_STICKY;
     }
@@ -226,7 +236,7 @@ public class CurrentLocationTracker extends Service implements LocationListener{
     public void sendNotification() {
         if (isAtLoc() && (!locLastVisited.equals(locToSendNotification) ||
                 pastTimeLimit(locToSendNotification, true))){
-
+            departureSent = false;
             //Get timestamp
             Date date = new Date();
             DateFormat dateFormat = new SimpleDateFormat("hh:mm a", Locale.US);
@@ -239,25 +249,29 @@ public class CurrentLocationTracker extends Service implements LocationListener{
 
             //Send message
             parseClient.sendNotification("Your partner visited " + locToSendNotification + " at "
-                    + currTime, true, locToSendNotification
+                            + currTime, true, locToSendNotification
                     , new LatLng(lastVisited.getLatitude(), lastVisited.getLongitude()));
             locLastVisited = locToSendNotification;
+
         }
     }
 
     private void sendDepartNoti(){
-        if(pastTimeLimit(locLastVisited, false)){
+//        if(pastTimeLimit(locLastVisited, false) ){
+        if(!departureSent){
             //Get timestamp
             Date date = new Date();
             DateFormat dateFormat = new SimpleDateFormat("hh:mm a", Locale.US);
             String currTime = dateFormat.format(date);
 
-            timeLastDepart.put(locLastVisited, System.currentTimeMillis());
+//            timeLastDepart.put(locLastVisited, System.currentTimeMillis());
 
             //Send message
             parseClient.sendNotification("Your partner departed " + locLastVisited + " at "
                     + currTime, false, locLastVisited, new LatLng(lastVisited.getLatitude(), lastVisited.getLongitude()));
+            departureSent = true;
         }
+
     }
 
     /**

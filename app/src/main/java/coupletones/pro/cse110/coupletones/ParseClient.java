@@ -152,7 +152,7 @@ public class ParseClient
                 = new ParseObject(context.getText(R.string.parse_key_table_fav).toString());
 
         parseObject.put(context.getText(R.string.parse_key_locName).toString(),
-                                marker.getTitle());
+                marker.getTitle());
         parseObject.put(context.getText(R.string.parse_key_latlng).toString(),
                 new ParseGeoPoint(marker.getPosition().latitude, marker.getPosition().longitude));
         parseObject.put(context.getText(R.string.parse_key_userid).toString(),
@@ -388,7 +388,7 @@ public class ParseClient
                     if (resultList.size() == 1){
                         ParseObject result = resultList.get(0);
                         result.put(context.getText(R.string.parse_key_userid).toString(),
-                                        username);
+                                username);
                         result.saveInBackground();
                     }else{
                         //Display a toast if invalid id
@@ -434,10 +434,10 @@ public class ParseClient
                         PushNotificationReceiver.saveTones(tones);
 
                     }else{
-                        //Display a toast if invalid id
-                        Toast.makeText(context,
-                                context.getText(R.string.pc_empty_fav).toString(),
-                                Toast.LENGTH_SHORT).show();
+//                        //Display a toast if invalid id
+//                        Toast.makeText(context,
+//                                context.getText(R.string.pc_empty_fav).toString(),
+//                                Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -483,8 +483,8 @@ public class ParseClient
                 if (matches != null) {
                     if (matches.size() == 1) {
                         ParseObject result = matches.get(0);
-                            result.put(context.getText(R.string.parse_key_locName).toString(),
-                                    newlocName);
+                        result.put(context.getText(R.string.parse_key_locName).toString(),
+                                newlocName);
                         result.saveInBackground();
                     }
                 }
